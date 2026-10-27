@@ -1,0 +1,39 @@
+# Compila la web en cada push a main y publica el resultado (dist/) en la rama "deploy".
+# Hostinger despliega la rama "deploy" en public_html, así que siempre recibe el sitio ya compilado.
+name: Compilar y publicar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Publicar dist/ en la rama deploy
+        working-directory: dist
+        run: |
+          git init -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Build de ${GITHUB_SHA::7}"
+          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" deploy

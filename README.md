@@ -15,6 +15,12 @@ Construido con [Astro](https://astro.build), Tailwind CSS, GSAP y Lenis.
 | `npm run build`   | Genera el sitio de producción en `./dist/`           |
 | `npm run preview` | Previsualiza el sitio generado antes de publicarlo   |
 
+## Publicación (Hostinger)
+
+Cada `git push` a `main` ejecuta [.github/workflows/deploy.yml](.github/workflows/deploy.yml): GitHub Actions compila la web y publica `dist/` en la rama **`deploy`**. Hostinger está conectado a la rama `deploy` (no a `main`) con despliegue automático hacia `public_html`.
+
+No edites la rama `deploy` a mano: se reescribe en cada publicación.
+
 ## Estructura
 
 ```text
