@@ -1,23 +1,107 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: string;
+}
+
+const {
+  title = 'Corprovincia — Corporación Educativa de la Provincia | Sabanalarga',
+  description = 'Formación técnica laboral, cursos cortos prácticos y bachillerato con doble titulación en el Liceo Alcira Colón de Ahumada en Sabanalarga, Atlántico.',
+  image = 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
+  type = 'website'
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://corprovincia.com');
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="theme-color" content="#0A0920" />
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        // Respaldo: si las animaciones no arrancan, mostrar todo el contenido
+        setTimeout(function () {
+          if (!window.__motionReady) root.classList.add('motion-off');
+        }, 2500);
+      })();
+    </script>
+
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content="Corprovincia" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:locale" content="es_CO" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={image} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-full focus:bg-surface focus:text-ink focus:shadow-lg"
+    >
+      Saltar al contenido
+    </a>
+
+    <!-- Barra de progreso de lectura -->
+    <div class="fixed inset-x-0 top-0 z-[70] h-[3px] pointer-events-none" aria-hidden="true">
+      <div data-progress class="h-full origin-left scale-x-0 bg-gold"></div>
+    </div>
+
+    <Header currentPath={Astro.url.pathname} />
+    <main id="contenido" class="flex-grow">
+      <slot />
+    </main>
+    <WhatsAppButton />
+    <Footer />
+
+    <script>
+      import '../scripts/motion.ts';
+    </script>
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+  /* Transición suave entre páginas (navegadores compatibles) */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: 260ms cubic-bezier(0.23, 1, 0.32, 1) both vt-out; }
+  ::view-transition-new(root) { animation: 420ms cubic-bezier(0.16, 1, 0.3, 1) both vt-in; }
+  @keyframes vt-out { to { opacity: 0; transform: translateY(-12px); } }
+  @keyframes vt-in { from { opacity: 0; transform: translateY(18px); } }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  }
 </style>

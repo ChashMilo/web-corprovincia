@@ -1,0 +1,229 @@
+---
+import { ArrowUpRight, MonitorPlay } from "lucide-astro";
+import Logo from "./Logo.astro";
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const navLinks = [
+  { name: "Inicio", href: "/" },
+  { name: "Programas", href: "/cursos" },
+  { name: "Liceo", href: "/liceo" },
+  { name: "Nosotros", href: "/nosotros" },
+  { name: "Contacto", href: "/contacto" },
+];
+
+const isActive = (href: string) => (href === "/" ? currentPath === "/" : currentPath.startsWith(href));
+---
+
+<header data-header class="site-header fixed inset-x-0 top-0 z-50 pt-3 sm:pt-4">
+  <div class="wrap">
+    <div class="bar flex items-center justify-between gap-3 h-14 sm:h-[3.75rem] pl-4 pr-2 rounded-full">
+      <a href="/" class="shrink-0 rounded-full" aria-label="Corprovincia — Inicio">
+        <Logo variant="dark" class="h-8 sm:h-9 w-auto" />
+      </a>
+
+      <nav class="hidden lg:block" aria-label="Navegación principal">
+        <ul class="nav-list relative flex items-center gap-0.5">
+          {navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                class="nav-link relative block px-4 py-2 rounded-full text-[0.9rem] font-medium"
+              >
+                {link.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1.5">
+        <a
+          href="https://cepdigital.lectaia.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden md:inline-flex btn btn-sm text-ink-soft hover:text-ink"
+          style="--fill: var(--surface-2)"
+        >
+          <MonitorPlay class="w-4 h-4 text-gold-ink" />
+          Aula virtual
+        </a>
+        <a href="/inscripcion" class="hidden sm:inline-flex btn btn-primary btn-sm" data-magnetic="0.25">
+          Inscríbete
+          <ArrowUpRight class="w-4 h-4" />
+        </a>
+
+        <button
+          type="button"
+          id="menu-btn"
+          class="menu-btn inline-flex items-center justify-center lg:hidden"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="menu-overlay"
+        >
+          <span class="menu-lines" aria-hidden="true"><span></span><span></span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Menú móvil a pantalla completa -->
+<div id="menu-overlay" class="menu-overlay on-dark noise lg:hidden" aria-hidden="true">
+  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span></div>
+  <nav class="wrap h-full flex flex-col pt-28 pb-10" aria-label="Navegación móvil">
+    <ul class="space-y-1">
+      {navLinks.map((link, i) => (
+        <li class="menu-item overflow-hidden" style={`--i:${i}`}>
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? "page" : undefined}
+            class="menu-link flex items-baseline gap-4 py-2 font-display text-[2.6rem] sm:text-6xl font-semibold tracking-tight"
+          >
+            <span class="font-mono text-xs text-white/40 tabular">0{i + 1}</span>
+            {link.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="menu-item mt-auto grid gap-2.5" style="--i:6">
+      <a href="/inscripcion" class="btn btn-gold btn-lg w-full">Inscríbete hoy <ArrowUpRight class="w-4 h-4" /></a>
+      <a href="https://cepdigital.lectaia.com/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-lg w-full">
+        <MonitorPlay class="w-4 h-4" /> Aula virtual
+      </a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .site-header {
+    transition: transform 500ms var(--ease-expo);
+  }
+  .site-header[data-hidden="true"] { transform: translateY(-130%); }
+
+  .bar {
+    background: rgb(255 255 255 / 0.8);
+    backdrop-filter: saturate(1.6) blur(18px);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px);
+    border: 1px solid rgb(255 255 255 / 0.6);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.6) inset,
+      0 10px 30px -12px rgb(10 9 32 / 0.25);
+    transition: background-color 300ms ease, box-shadow 300ms ease;
+  }
+  .site-header[data-scrolled="true"] .bar {
+    background: rgb(255 255 255 / 0.86);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.6) inset,
+      0 14px 40px -14px rgb(10 9 32 / 0.35);
+  }
+
+  .nav-link { color: var(--ink-soft); transition: color 200ms ease, background-color 200ms ease; }
+  .nav-link[aria-current="page"] { color: var(--ink); background: rgb(15 14 44 / 0.06); }
+  .nav-link[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: var(--color-gold);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover { color: var(--ink); background: rgb(15 14 44 / 0.05); }
+  }
+
+  .menu-btn {
+    position: relative;
+    z-index: 61;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    background: var(--ink);
+    color: #fff;
+    transition: transform 160ms var(--ease-out), background-color 300ms ease;
+  }
+  .menu-btn:active { transform: scale(0.94); }
+  .menu-lines { position: relative; width: 18px; height: 10px; }
+  .menu-lines span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.75px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 450ms var(--ease-expo), top 450ms var(--ease-expo);
+  }
+  .menu-lines span:first-child { top: 0; }
+  .menu-lines span:last-child { top: 8px; }
+  :global(html[data-menu="open"]) .menu-lines span:first-child { top: 4px; transform: rotate(45deg); }
+  :global(html[data-menu="open"]) .menu-lines span:last-child { top: 4px; transform: rotate(-45deg); }
+  :global(html[data-menu="open"]) .menu-btn { background: var(--color-gold); color: var(--color-night); }
+
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    clip-path: circle(0% at calc(100% - 2.6rem) 2.6rem);
+    visibility: hidden;
+    transition:
+      clip-path 700ms var(--ease-in-out),
+      visibility 0s linear 700ms;
+  }
+  :global(html[data-menu="open"]) .menu-overlay {
+    clip-path: circle(150% at calc(100% - 2.6rem) 2.6rem);
+    visibility: visible;
+    transition: clip-path 800ms var(--ease-in-out), visibility 0s;
+  }
+  .menu-item > a, .menu-item.grid {
+    transform: translateY(110%);
+    opacity: 0;
+    transition: transform 500ms var(--ease-expo), opacity 300ms ease;
+  }
+  :global(html[data-menu="open"]) .menu-item > a,
+  :global(html[data-menu="open"]) .menu-item.grid {
+    transform: none;
+    opacity: 1;
+    transition: transform 900ms var(--ease-expo), opacity 600ms ease;
+    transition-delay: calc(250ms + var(--i) * 60ms);
+  }
+  .menu-link { color: rgb(255 255 255 / 0.85); }
+  .menu-link[aria-current="page"] { color: var(--color-gold); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-overlay, :global(html[data-menu="open"]) .menu-overlay { transition: visibility 0s; }
+    .menu-item > a, .menu-item.grid { transform: none; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById("menu-btn");
+  const overlay = document.getElementById("menu-overlay");
+  const html = document.documentElement;
+
+  function setMenu(open: boolean) {
+    html.dataset.menu = open ? "open" : "closed";
+    btn?.setAttribute("aria-expanded", String(open));
+    btn?.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    overlay?.setAttribute("aria-hidden", String(!open));
+    if (open) window.__lenis?.stop();
+    else window.__lenis?.start();
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+
+  btn?.addEventListener("click", () => setMenu(html.dataset.menu !== "open"));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && html.dataset.menu === "open") {
+      setMenu(false);
+      btn?.focus();
+    }
+  });
+  overlay?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+</script>

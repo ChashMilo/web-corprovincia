@@ -1,0 +1,128 @@
+---
+import { ArrowUpRight, MapPin, Phone, Mail, MessageCircle } from "lucide-astro";
+import Logo from "./Logo.astro";
+
+const navegacion = [
+  { label: "Inicio", href: "/" },
+  { label: "Programas", href: "/cursos" },
+  { label: "Liceo Alcira Colón", href: "/liceo" },
+  { label: "Validación de bachillerato", href: "/liceo#validacion" },
+  { label: "Nosotros", href: "/nosotros" },
+  { label: "Contacto", href: "/contacto" },
+];
+
+const programas = [
+  { label: "Técnico en Seguridad Laboral", href: "/cursos/tecnico-seguridad-laboral" },
+  { label: "Técnico en Gestión Administrativa", href: "/cursos/tecnico-gestion-administrativa" },
+  { label: "Técnico en Gestión Contable", href: "/cursos/tecnico-gestion-contable" },
+  { label: "Marketing digital", href: "/cursos/marketing-digital" },
+  { label: "Barbería profesional", href: "/cursos/barberia" },
+  { label: "Manicure y pedicure", href: "/cursos/belleza-unas-manos-y-pies" },
+];
+---
+
+<footer class="on-dark noise">
+  <div class="aurora opacity-60" aria-hidden="true"><span class="a1"></span><span class="a3"></span></div>
+  <div class="grid-lines" aria-hidden="true"></div>
+
+  <div class="wrap pt-24 sm:pt-32">
+    <!-- CTA -->
+    <div class="grid lg:grid-cols-12 gap-10 items-end pb-20 sm:pb-24 border-b border-white/10">
+      <div class="lg:col-span-8">
+        <p class="tag tag-dot">Matrículas abiertas</p>
+        <h2 class="display display-lg mt-6" data-split>
+          Sé parte de nuestra <span class="text-gold">primera promoción.</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 lg:items-end" data-reveal>
+        <a href="/inscripcion" class="btn btn-gold btn-xl" data-magnetic>
+          Inscríbete ahora
+          <span class="btn-icon"><ArrowUpRight class="w-4 h-4" /></span>
+        </a>
+        <a href="https://wa.me/573145577521" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-xl">
+          <MessageCircle class="w-4 h-4" /> Escríbenos
+        </a>
+      </div>
+    </div>
+
+    <!-- Columnas -->
+    <div class="grid grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-12 py-16">
+      <div class="col-span-2 lg:col-span-5">
+        <Logo variant="white" class="h-10 w-auto" />
+        <p class="mt-5 max-w-sm text-sm text-white/55 leading-relaxed">
+          Corporación Educativa de la Provincia. Agrupa al Instituto de Educación para el Trabajo y
+          Desarrollo Humano de la Provincia (I.E.T de la Provincia) y al Liceo Alcira Colón de Ahumada,
+          en Sabanalarga, Atlántico.
+        </p>
+        <ul class="mt-6 space-y-2.5 text-sm">
+          <li class="flex gap-3 text-white/70"><MapPin class="w-4 h-4 mt-0.5 text-gold shrink-0" />Calle 18 #19B-80, Sabanalarga</li>
+          <li><a href="tel:6052525005" class="f-link flex gap-3"><Phone class="w-4 h-4 mt-0.5 text-gold shrink-0" /><span class="tabular">(605) 252 5005</span></a></li>
+          <li><a href="https://wa.me/573145577521" target="_blank" rel="noopener noreferrer" class="f-link flex gap-3"><MessageCircle class="w-4 h-4 mt-0.5 text-gold shrink-0" /><span class="tabular">+57 314 557 7521</span></a></li>
+          <li><a href="mailto:contacto@corprovincia.com" class="f-link flex gap-3 break-all"><Mail class="w-4 h-4 mt-0.5 text-gold shrink-0" />contacto@corprovincia.com</a></li>
+        </ul>
+      </div>
+
+      <nav class="lg:col-span-3" aria-label="Navegación del pie de página">
+        <h3 class="tag">Explorar</h3>
+        <ul class="mt-5 space-y-2.5">
+          {navegacion.map(({ label, href }) => <li><a href={href} class="f-link">{label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="lg:col-span-4">
+        <h3 class="tag">Programas</h3>
+        <ul class="mt-5 space-y-2.5">
+          {programas.map(({ label, href }) => <li><a href={href} class="f-link">{label}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marca gigante -->
+  <div class="wrap" aria-hidden="true">
+    <p class="wordmark font-display font-bold select-none">Corprovincia</p>
+  </div>
+
+  <div class="wrap pb-8 pt-6 sm:pr-24 flex flex-col-reverse sm:flex-row items-start sm:items-center justify-between gap-5 text-xs text-white/45">
+    <span>© {new Date().getFullYear()} Corprovincia · Sabanalarga, Atlántico, Colombia</span>
+    <div class="flex items-center gap-2">
+      <a href="https://www.facebook.com/corprovincia" target="_blank" rel="noopener noreferrer" class="social" aria-label="Facebook">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+      </a>
+      <a href="https://www.instagram.com/corprovincia/" target="_blank" rel="noopener noreferrer" class="social" aria-label="Instagram">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .f-link { color: rgb(255 255 255 / 0.7); font-size: 0.9375rem; transition: color 200ms ease; }
+  .wordmark {
+    font-size: clamp(3.5rem, 15.5vw, 16.5rem);
+    line-height: 0.78;
+    letter-spacing: -0.045em;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    margin-left: -0.04em;
+  }
+  .social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    color: rgb(255 255 255 / 0.75);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    transition: transform 160ms var(--ease-out), background-color 200ms ease, color 200ms ease;
+  }
+  .social:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) {
+    .f-link:hover { color: #fff; }
+    .social:hover { color: var(--color-night); background: var(--color-gold); border-color: var(--color-gold); }
+  }
+</style>

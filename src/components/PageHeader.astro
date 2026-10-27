@@ -1,0 +1,48 @@
+---
+import { ArrowLeft } from "lucide-astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** Final del título resaltado en dorado */
+  accent?: string;
+  description?: string;
+  back?: { label: string; href: string };
+  image?: string;
+  compact?: boolean;
+}
+
+const { eyebrow, title, accent, description, back, image, compact = false } = Astro.props;
+---
+
+<section class="on-dark noise">
+  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+  <div class="grid-lines" aria-hidden="true"></div>
+  {image && (
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <img src={image} alt="" class="w-full h-[130%] object-cover opacity-25" data-parallax="8" />
+      <div class="absolute inset-0 bg-gradient-to-r from-night via-night/85 to-night/40"></div>
+    </div>
+  )}
+
+  <div class="wrap pt-36 sm:pt-44 pb-16 sm:pb-24">
+    {back && (
+      <a href={back.href} class="ulink text-sm text-white/65 hover:text-white mb-10" data-reveal>
+        <ArrowLeft class="w-4 h-4" /> {back.label}
+      </a>
+    )}
+    <div class={compact ? "max-w-4xl" : "max-w-5xl"}>
+      {eyebrow && <p class="tag tag-dot" data-reveal>{eyebrow}</p>}
+      <h1
+        class={`display mt-6 ${compact ? "display-md" : "display-lg"}`}
+        data-split="load"
+      >
+        {title}{accent && <>{' '}<span class="text-gold">{accent}</span></>}
+      </h1>
+      {description && (
+        <p class="lead mt-7 max-w-2xl" data-reveal>{description}</p>
+      )}
+      <slot />
+    </div>
+  </div>
+</section>
