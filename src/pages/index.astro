@@ -1,11 +1,527 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import CourseCard from '../components/CourseCard.astro';
+import CepIsotipo from '../components/CepIsotipo.astro';
+import LiceoLogo from '../components/LiceoLogo.astro';
+import {
+  ArrowUpRight,
+  ArrowRight,
+  ArrowDown,
+  Check,
+  MapPin,
+  Users,
+} from 'lucide-astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allCursos = await getCollection('cursos');
+const programas = [...allCursos].sort((a, b) => {
+  if (a.data.categoria === 'tecnico' && b.data.categoria !== 'tecnico') return -1;
+  if (a.data.categoria !== 'tecnico' && b.data.categoria === 'tecnico') return 1;
+  return Number(b.data.destacado) - Number(a.data.destacado) || a.data.nombre.localeCompare(b.data.nombre);
+});
+
+const marquee = [
+  'Seguridad laboral', 'Gestión administrativa', 'Gestión contable', 'Marketing digital',
+  'Barbería', 'Maquillaje social', 'Cuidado de la piel', 'Uñas, manos y pies',
+  'Inglés', 'Informática', 'Bachillerato', 'Validación',
+];
+
+const rutas = [
+  {
+    n: '01',
+    tag: 'I.E.T de la Provincia · 3 semestres',
+    title: 'Técnicos auxiliares',
+    desc: 'Formación lectivo-práctica por competencias, con horario especial para quienes trabajan: tardes y sábados.',
+    items: ['Seguridad laboral (SG-SST)', 'Gestión administrativa', 'Gestión contable y financiera'],
+    href: '/cursos?cat=tecnico',
+    cta: 'Ver técnicos',
+    img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',
+    theme: 'dark',
+  },
+  {
+    n: '02',
+    tag: 'I.E.T de la Provincia · 40 a 80 horas',
+    title: 'Cursos cortos',
+    desc: 'Aprende un oficio con salida inmediata. Clases prácticas desde el primer día, en grupos pequeños.',
+    items: ['Barbería y belleza', 'Marketing y redes', 'Inglés e informática'],
+    href: '/cursos?cat=curso_corto',
+    cta: 'Ver cursos cortos',
+    img: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1200&q=80',
+    theme: 'gold',
+  },
+  {
+    n: '03',
+    tag: 'Liceo Alcira Colón · Jornada mañana',
+    title: 'Bachillerato con doble titulación',
+    desc: 'Te gradúas como bachiller académico y técnico laboral al mismo tiempo. También ofrecemos validación del bachillerato.',
+    items: ['Grados 6° a 11°', 'Jornada mañana', 'Preparación Saber 11'],
+    href: '/liceo',
+    cta: 'Conocer el Liceo',
+    img: '/images/home/bachillerato-doble-titulacion.webp',
+    theme: 'light',
+  },
+];
+
+// name puede ser un arreglo cuando la foto muestra a varias personas (una por línea)
+// bio: títulos académicos opcionales, uno por línea debajo del nombre
+const docentes: { img: string; name: string | string[]; area: string; bio?: string[] }[] = [
+  { img: '/images/docentes/socios-fundadores.webp', name: ['Licenciada Alcira Colón', 'Gestor cultural George Ahumada'], area: 'Socios fundadores' },
+  {
+    img: '/images/docentes/directora-geocanda-ahumada.webp',
+    name: 'Geocanda Ahumada',
+    area: 'Directora / Rectora',
+    bio: ['Esp. en Pedagogía y Docencia', 'Mg. en Gerencia de Proyectos de Innovación'],
+  },
+  {
+    img: '/images/docentes/docente-jesus-sanjuan.webp',
+    name: 'Jesús Sanjuan',
+    area: 'Área de docencia',
+    bio: ['Politólogo', 'Esp. en Alta Gerencia'],
+  },
+  {
+    img: '/images/docentes/docente-camilo-sanjuan.webp',
+    name: 'Camilo Sanjuan',
+    area: 'Área administrativa',
+    bio: ['Ing. Multimedia', 'Esp. en Gestión de Tecnologías de la Información'],
+  },
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Corprovincia — Aprende, certifícate y avanza | Sabanalarga"
+  description="Corporación Educativa de la Provincia en Sabanalarga. Técnicos laborales, cursos cortos y bachillerato con doble titulación en el Liceo Alcira Colón de Ahumada."
+>
+
+  <!-- ═══════════ 1. HERO ═══════════ -->
+  <section class="hero on-dark noise min-h-[100svh] flex flex-col">
+    <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+    <div class="grid-lines" aria-hidden="true"></div>
+
+    <div class="wrap flex-1 grid lg:grid-cols-12 gap-12 items-center pt-32 sm:pt-36 pb-10">
+      <div class="lg:col-span-7 relative z-10">
+        <p class="pill" data-reveal>
+          <span class="relative flex w-5 h-5 items-center justify-center rounded-full bg-emerald-400/15">
+            <span class="absolute w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-70"></span>
+            <span class="relative w-2 h-2 rounded-full bg-emerald-400"></span>
+          </span>
+          Matrículas abiertas · Sabanalarga, Atlántico
+        </p>
+
+        <h1 class="display display-xl mt-8" data-split="load">
+          Aprende.<br />
+          Certifícate.<br />
+          <span class="text-gold">Avanza.</span>
+        </h1>
+
+        <p class="lead mt-8 max-w-xl" data-reveal>
+          Técnicos laborales, cursos cortos de alta demanda y bachillerato con doble titulación en el
+          Liceo Alcira Colón de Ahumada. Formación práctica, pensada para la región.
+        </p>
+
+        <!-- Puertas de entrada: I.E.T de la Provincia y Liceo -->
+        <div class="mt-10 grid sm:grid-cols-2 gap-3 max-w-2xl" data-reveal>
+          <a href="/cursos" class="portal portal-gold group" aria-label="Instituto de Educación para el Trabajo y Desarrollo Humano de la Provincia: técnicos y cursos" data-magnetic="0.15">
+            <span class="portal-icon bg-white">
+              <CepIsotipo class="w-9 h-9" />
+            </span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-mono text-[0.68rem] uppercase tracking-wider opacity-60">Técnicos y cursos</span>
+              <span class="block mt-0.5 font-display text-lg sm:text-xl font-semibold leading-tight tracking-tight">I.E.T de la Provincia</span>
+            </span>
+            <span class="portal-arrow"><ArrowUpRight class="w-4 h-4" /></span>
+          </a>
+
+          <a href="/liceo" class="portal portal-glass group" data-magnetic="0.15">
+            <span class="portal-icon bg-white">
+              <LiceoLogo class="h-11 w-auto" />
+            </span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-mono text-[0.68rem] uppercase tracking-wider opacity-60">Bachillerato · mañana</span>
+              <span class="block mt-0.5 font-display text-lg sm:text-xl font-semibold leading-tight tracking-tight">Liceo Alcira Colón</span>
+            </span>
+            <span class="portal-arrow"><ArrowUpRight class="w-4 h-4" /></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Escena 3D -->
+      <div class="lg:col-span-5 relative h-[26rem] sm:h-[32rem] lg:h-[38rem]" data-tilt-scene data-reveal>
+        <div class="scene absolute inset-0">
+          <div class="float-a absolute right-[4%] top-[2%] w-[62%] aspect-[3/4]" data-depth="1.4">
+            <div class="h-full rounded-[1.75rem] overflow-hidden border border-white/15 shadow-2xl shadow-black/50 -rotate-[5deg]">
+              <img src="/images/home/hero-clase-fotografia.webp" alt="Clase práctica de fotografía en estudio con estudiantes de Corprovincia" class="w-full h-full object-cover" fetchpriority="high" />
+            </div>
+          </div>
+          <div class="float-b absolute left-[2%] bottom-[6%] w-[52%] aspect-[4/5]" data-depth="0.8">
+            <div class="h-full rounded-[1.75rem] overflow-hidden border border-white/15 shadow-2xl shadow-black/50 rotate-[4deg]">
+              <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=700&q=80" alt="Práctica de barbería profesional" class="w-full h-full object-cover" />
+            </div>
+          </div>
+          <div class="float-c absolute right-[2%] bottom-[14%] w-[58%] max-w-[17rem]" data-depth="2">
+            <div class="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-4 shadow-2xl shadow-black/40">
+              <p class="tag !text-white/60">Liceo Alcira Colón</p>
+              <p class="mt-2 font-display text-lg font-semibold leading-tight">Bachiller + técnico laboral</p>
+              <div class="mt-3 flex items-center gap-2.5 text-xs text-white/70">
+                <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0"><LiceoLogo class="h-6 w-auto" /></span>
+                Doble titulación oficial
+              </div>
+            </div>
+          </div>
+
+          <!-- Insignia giratoria -->
+          <div class="badge absolute left-[6%] top-[4%] w-28 h-28 sm:w-32 sm:h-32" data-depth="2.4" aria-hidden="true">
+            <svg viewBox="0 0 120 120" class="badge-spin w-full h-full">
+              <defs><path id="circ" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" /></defs>
+              <circle cx="60" cy="60" r="59" fill="#D9AE4F" />
+              <text font-size="10.5" font-family="Geist Mono, monospace" letter-spacing="2.6" fill="#0A0920">
+                <textPath href="#circ">PRIMERA PROMOCIÓN · INSCRÍBETE · </textPath>
+              </text>
+            </svg>
+            <span class="absolute inset-0 flex items-center justify-center text-night">
+              <ArrowUpRight class="w-7 h-7" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos rápidos -->
+    <div class="wrap pb-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10 bg-white/10" data-reveal>
+        {[
+          { k: '12', v: 'programas activos', count: true },
+          { k: '2', v: 'títulos en el Liceo', count: true },
+          { k: '3', v: 'semestres por técnico', count: true },
+          { k: 'Sede', v: 'Sabanalarga, Atlántico', count: false },
+        ].map(({ k, v, count }) => (
+          <div class="bg-night/80 backdrop-blur px-5 py-4 sm:py-5">
+            <p class="font-display text-2xl sm:text-3xl font-semibold tabular" data-count={count ? k : undefined}>{k}</p>
+            <p class="mt-0.5 text-xs sm:text-sm text-white/55">{v}</p>
+          </div>
+        ))}
+      </div>
+      <div class="hidden sm:flex items-center gap-3 mt-6 text-xs text-white/45 font-mono uppercase tracking-wider">
+        <span class="scroll-cue flex items-center justify-center w-7 h-7 rounded-full border border-white/20"><ArrowDown class="w-3.5 h-3.5" /></span>
+        Desliza para descubrir
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 2. MARQUEE ═══════════ -->
+  <section class="py-10 sm:py-14 border-b border-line" aria-label="Áreas de formación">
+    <div class="marquee" style="--speed: 55s">
+      {[0, 1].map((dup) => (
+        <div class="marquee-track" aria-hidden={dup === 1 ? 'true' : undefined}>
+          {marquee.map((m) => (
+            <span class="flex items-center gap-10 font-display text-4xl sm:text-6xl font-semibold tracking-tight text-ink whitespace-nowrap">
+              {m}
+              <span class="w-3 h-3 rotate-45 rounded-[3px] bg-gold" aria-hidden="true"></span>
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══════════ 3. MANIFIESTO ═══════════ -->
+  <section class="py-24 sm:py-36">
+    <div class="wrap grid lg:grid-cols-12 gap-10">
+      <p class="tag tag-dot lg:col-span-3 lg:pt-4" data-reveal>Nuestra idea</p>
+      <p class="lg:col-span-9 font-display font-medium text-[clamp(1.75rem,4.2vw,3.75rem)] leading-[1.08] tracking-[-0.03em]" data-scrub-text>
+        Creemos que estudiar tiene que abrir puertas reales. Por eso enseñamos haciendo, con docentes
+        que ejercen lo que enseñan y horarios que se adaptan a tu vida.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 4. RUTAS (tarjetas apiladas) ═══════════ -->
+  <section class="pb-24 sm:pb-32">
+    <div class="wrap">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
+        <h2 class="display display-lg max-w-3xl" data-split>Tres caminos, <span class="text-gold-ink">una meta.</span></h2>
+        <p class="lead max-w-sm" data-reveal>Elige la ruta que se ajusta a tu tiempo y al punto en el que estás hoy.</p>
+      </div>
+
+      <div class="stack space-y-[8vh] lg:space-y-[14vh]">
+        {rutas.map((r, i) => (
+          <article class="stack-card sticky" style={`--i:${i}`} data-stack-card>
+            <div
+              data-stack-inner
+              class={`stack-inner relative overflow-hidden rounded-[1.75rem] lg:rounded-[2rem] flex flex-col lg:grid lg:grid-cols-2 lg:h-[74vh] lg:max-h-[46rem] ${
+                r.theme === 'dark' ? 'bg-night text-white' : r.theme === 'gold' ? 'bg-gold-soft text-ink' : 'bg-surface text-ink border border-line'
+              }`}
+            >
+              <div class="relative z-10 flex flex-col p-6 sm:p-10 lg:p-14">
+                <div class="flex items-start justify-between gap-4">
+                  <span class={`font-mono text-sm whitespace-nowrap ${r.theme === 'dark' ? 'text-white/50' : 'text-ink-muted'}`}>{r.n} / 03</span>
+                  <span class={`tag text-right justify-end ${r.theme === 'dark' ? '!text-gold' : '!text-gold-ink'}`}>{r.tag}</span>
+                </div>
+                <h3 class="display display-md mt-6 sm:mt-10 lg:mt-auto">{r.title}</h3>
+                <p class={`mt-3 sm:mt-5 max-w-md text-[0.95rem] sm:text-lg leading-relaxed ${r.theme === 'dark' ? 'text-white/70' : 'text-ink-soft'}`}>{r.desc}</p>
+                <ul class="mt-5 sm:mt-7 flex flex-wrap gap-1.5 sm:gap-2">
+                  {r.items.map((it) => (
+                    <li class={`inline-flex items-center gap-1.5 rounded-full px-3 sm:px-3.5 py-1 sm:py-1.5 text-[0.8rem] sm:text-sm ${
+                      r.theme === 'dark' ? 'bg-white/[0.08] border border-white/15' : r.theme === 'gold' ? 'bg-white/60' : 'bg-muted'
+                    }`}>
+                      <Check class={`w-3.5 h-3.5 ${r.theme === 'dark' ? 'text-gold' : 'text-gold-ink'}`} />{it}
+                    </li>
+                  ))}
+                </ul>
+                <a href={r.href} class={`btn sm:px-[1.6rem] sm:py-4 sm:text-base mt-6 sm:mt-9 self-start ${r.theme === 'dark' ? 'btn-gold' : 'btn-primary'}`}>
+                  {r.cta} <ArrowRight class="arrow w-4 h-4" />
+                </a>
+              </div>
+              <div class="relative flex-1 min-h-[7rem] lg:min-h-0 m-3 mt-0 sm:m-4 sm:mt-0 lg:mt-4 lg:ml-0 rounded-[1.25rem] lg:rounded-[1.5rem] overflow-hidden">
+                <img src={r.img} alt="" loading="lazy" class="absolute inset-0 w-full h-[120%] object-cover" data-parallax="6" />
+              </div>
+              <div class="absolute inset-0 z-20 bg-night opacity-0 pointer-events-none" data-stack-shade aria-hidden="true"></div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 5. BENTO VENTAJAS ═══════════ -->
+  <section class="py-24 sm:py-32 bg-surface border-y border-line">
+    <div class="wrap">
+      <div class="max-w-3xl mb-14">
+        <p class="tag tag-dot" data-reveal>Por qué Corprovincia</p>
+        <h2 class="display display-lg mt-6" data-split>Aprender aquí <span class="text-gold-ink">se siente distinto.</span></h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-4 auto-rows-[minmax(15rem,auto)]">
+        <div class="spotlight md:col-span-4 md:row-span-2 relative overflow-hidden rounded-[1.75rem] bg-night text-white min-h-[24rem]" data-reveal>
+          <img src="/images/home/metodologia-estudiantes.webp" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <div class="absolute inset-0 bg-gradient-to-t from-night via-night/50 to-transparent"></div>
+          <div class="relative h-full flex flex-col justify-end p-7 sm:p-10">
+            <p class="tag !text-gold">Metodología</p>
+            <h3 class="display display-sm mt-3 max-w-md">Aprendes haciendo, desde la primera clase.</h3>
+            <p class="mt-3 max-w-md text-white/70">Talleres prácticos con herramientas reales del entorno laboral.</p>
+          </div>
+        </div>
+
+        <div class="spotlight md:col-span-2 card p-7 flex flex-col" data-reveal>
+          <p class="tag">Liceo</p>
+          <p class="mt-auto font-display text-[5.5rem] leading-none font-semibold tracking-tighter text-ink tabular" data-count="2">2</p>
+          <p class="mt-2 text-ink-soft">títulos al graduarte: bachiller académico y técnico laboral.</p>
+        </div>
+
+        <div class="spotlight md:col-span-2 card p-7 flex flex-col" data-reveal>
+          <p class="tag">Horarios de técnicos</p>
+          <div class="mt-auto grid grid-cols-6 gap-1.5" aria-hidden="true">
+            {['L', 'M', 'M', 'J', 'V', 'S'].map((d, i) => (
+              <span class={`day aspect-square rounded-xl flex items-center justify-center font-mono text-sm ${i === 5 ? 'bg-gold text-night' : 'bg-muted text-ink-soft'}`} style={`--i:${i}`}>
+                {d}
+              </span>
+            ))}
+          </div>
+          <p class="mt-4 text-ink-soft"><strong class="text-ink font-semibold">Tardes y sábados</strong>, para que estudies sin dejar de trabajar.</p>
+        </div>
+
+        <div class="spotlight md:col-span-3 card p-7 sm:p-8 flex flex-col sm:flex-row sm:items-end gap-6" data-reveal>
+          <div class="flex-1">
+            <Users class="w-6 h-6 text-gold-ink" />
+            <h3 class="mt-5 font-display text-2xl font-semibold tracking-tight">Docentes que ejercen</h3>
+            <p class="mt-2 text-ink-soft">Profesionales activos en su área: aprendes lo que hoy se usa en el trabajo.</p>
+          </div>
+          <div class="flex -space-x-3">
+            {docentes.map((d) => (
+              <img src={d.img} alt="" loading="lazy" class="w-12 h-12 rounded-full object-cover border-[3px] border-surface" />
+            ))}
+          </div>
+        </div>
+
+        <div class="spotlight md:col-span-3 card p-7 sm:p-8 flex flex-col" data-reveal>
+          <MapPin class="w-6 h-6 text-gold-ink" />
+          <h3 class="mt-5 font-display text-2xl font-semibold tracking-tight">Sede propia en Sabanalarga</h3>
+          <p class="mt-2 text-ink-soft">Calle 18 #19B-80. Espacios pensados para el aprendizaje práctico y colaborativo.</p>
+          <a href="/contacto" class="ulink mt-5 text-sm text-ink self-start">Cómo llegar <ArrowRight class="w-4 h-4" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 6. PROGRAMAS (scroll horizontal) ═══════════ -->
+  <section class="hscroll on-dark noise" data-hscroll>
+    <div class="aurora opacity-50" aria-hidden="true"><span class="a1"></span><span class="a2"></span></div>
+    <div class="lg:h-screen flex flex-col justify-center py-20 lg:py-0">
+      <div class="hscroll-viewport overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none">
+        <div class="flex gap-4 sm:gap-5 w-max px-5 sm:px-8 xl:px-12" data-hscroll-track>
+          <div class="snap-start w-[85vw] sm:w-[26rem] lg:w-[30rem] shrink-0 flex flex-col justify-between pr-6 lg:pr-12 py-2">
+            <div>
+              <p class="tag tag-dot">Oferta académica</p>
+              <h2 class="display display-lg mt-6">
+                <span data-count="12">12</span> programas.<br /><span class="text-gold">Uno es tuyo.</span>
+              </h2>
+            </div>
+            <div class="mt-10">
+              <p class="lead max-w-xs">Técnicos laborales y cursos cortos con alta demanda en la región.</p>
+              <a href="/cursos" class="btn btn-ghost btn-lg mt-6">Ver catálogo <ArrowRight class="arrow w-4 h-4" /></a>
+            </div>
+          </div>
+
+          {programas.map((c, i) => (
+            <div class="snap-start w-[80vw] sm:w-[22rem] shrink-0">
+              <CourseCard
+                nombre={c.data.nombre}
+                slug={c.data.slug}
+                categoria={c.data.categoria}
+                resumen={c.data.resumen}
+                imagen={c.data.imagen}
+                duracion={c.data.duracion}
+                index={i}
+              />
+            </div>
+          ))}
+
+          <a href="/inscripcion" class="end-card snap-start w-[80vw] sm:w-[22rem] shrink-0 rounded-[1.75rem] border border-dashed border-white/25 flex flex-col items-center justify-center text-center p-8">
+            <span class="w-20 h-20 rounded-full bg-gold text-night flex items-center justify-center end-arrow"><ArrowUpRight class="w-8 h-8" /></span>
+            <span class="mt-6 font-display text-3xl font-semibold tracking-tight">¿Ya elegiste?</span>
+            <span class="mt-2 text-white/60">Reserva tu cupo en minutos.</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="wrap mt-10 hidden lg:block" aria-hidden="true">
+        <div class="h-px bg-white/15 overflow-hidden"><div class="h-full bg-gold origin-left scale-x-0" data-hscroll-bar></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 7. DOCENTES ═══════════ -->
+  <section class="py-24 sm:py-32">
+    <div class="wrap">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+        <div class="max-w-2xl">
+          <p class="tag tag-dot" data-reveal>Equipo docente</p>
+          <h2 class="display display-lg mt-6" data-split>Aprende con quienes <span class="text-gold-ink">ejercen.</span></h2>
+        </div>
+        <a href="/nosotros" class="ulink text-ink" data-reveal>Conoce la institución <ArrowRight class="w-4 h-4" /></a>
+      </div>
+
+      <ul class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-5 gap-y-10">
+        {docentes.map((d, i) => (
+          <li class={`group ${i % 2 === 1 ? 'lg:mt-16' : ''}`}>
+            <div class="aspect-[3/4] rounded-[1.5rem] overflow-hidden bg-muted" data-clip>
+              <img src={d.img} alt={`${[d.name].flat().join(' y ')}, ${d.area}`} loading="lazy" class="teacher-img w-full h-full object-cover" />
+            </div>
+            <p class="mt-4 tag">{d.area}</p>
+            <h3 class="mt-1.5 font-display text-lg sm:text-xl font-semibold tracking-tight">
+              {[d.name].flat().map((n, j) => <>{j > 0 && <br />}{n}</>)}
+            </h3>
+            {d.bio && (
+              <ul class="mt-2 space-y-0.5 text-sm text-ink-muted leading-snug">
+                {d.bio.map((b) => <li>{b}</li>)}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
 </Layout>
+
+<style>
+  /* Botones-puerta del hero */
+  .portal {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.6rem 0.75rem 0.6rem 0.6rem;
+    border-radius: 1.4rem;
+    border: 1px solid transparent;
+    transition: transform 160ms var(--ease-out), border-color 300ms ease;
+  }
+  .portal:active { transform: scale(0.98); }
+  .portal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--portal-fill);
+    transform: translateY(101%);
+    transition: transform 550ms var(--ease-expo);
+  }
+  .portal-gold { background: var(--color-gold); color: var(--color-night); --portal-fill: #fff; }
+  .portal-glass {
+    background: rgb(255 255 255 / 0.06);
+    border-color: rgb(255 255 255 / 0.16);
+    color: #fff;
+    backdrop-filter: blur(12px);
+    --portal-fill: rgb(255 255 255 / 0.12);
+  }
+  .portal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    flex-shrink: 0;
+    border-radius: 1rem;
+    box-shadow: 0 6px 18px -8px rgb(10 9 32 / 0.5);
+    transition: transform 600ms var(--ease-expo);
+  }
+  .portal-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: rgb(10 9 32 / 0.1);
+    transition: transform 600ms var(--ease-expo), background-color 300ms ease;
+  }
+  .portal-glass .portal-arrow { background: rgb(255 255 255 / 0.1); }
+  @media (hover: hover) and (pointer: fine) {
+    .portal:hover::before { transform: translateY(0); }
+    .portal:hover .portal-icon { transform: rotate(-6deg) scale(1.06); }
+    .portal:hover .portal-arrow { transform: rotate(45deg); }
+    .portal-glass:hover { border-color: rgb(255 255 255 / 0.3); }
+  }
+
+
+  .scene { perspective: 1200px; }
+  .scene > div { transform-style: preserve-3d; }
+  .float-a { animation: bob 7s ease-in-out infinite; }
+  .float-b { animation: bob 8s ease-in-out -2s infinite; }
+  .float-c { animation: bob 6s ease-in-out -4s infinite; }
+  @keyframes bob { 50% { translate: 0 -12px; } }
+
+  .badge-spin { animation: spin 18s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .scroll-cue { animation: cue 2.2s var(--ease-in-out) infinite; }
+  @keyframes cue { 50% { transform: translateY(4px); } }
+
+  .stack-card { top: calc(5rem + var(--i) * 0.9rem); }
+  .stack-inner { height: calc(100svh - 7.5rem); max-height: 44rem; }
+  @media (min-width: 1024px) {
+    .stack-card { top: calc(6.5rem + var(--i) * 1.5rem); }
+    .stack-inner { height: 74vh; max-height: 46rem; }
+  }
+  .stack-inner { transform-origin: 50% 0%; }
+
+  .hscroll-viewport { scrollbar-width: none; }
+  .hscroll-viewport::-webkit-scrollbar { display: none; }
+
+  .end-arrow { transition: transform 600ms var(--ease-expo); }
+  .teacher-img { filter: grayscale(1); transition: filter 600ms ease, transform 1000ms var(--ease-expo); }
+  .day { transition: transform 400ms var(--ease-expo); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .end-card:hover .end-arrow { transform: rotate(45deg) scale(1.08); }
+    li:hover .teacher-img { filter: grayscale(0); transform: scale(1.05); }
+    .spotlight:hover .day { transform: translateY(-3px); transition-delay: calc(var(--i) * 40ms); }
+  }
+  @media (hover: none) { .teacher-img { filter: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-a, .float-b, .float-c, .badge-spin, .scroll-cue { animation: none; }
+  }
+</style>
