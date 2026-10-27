@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ArrowRight } from 'lucide-astro';
+---
+
+<Layout title="Página no encontrada — Corprovincia" description="La página que buscas no existe o cambió de dirección.">
+  <section class="on-dark noise min-h-[100svh] flex items-center">
+    <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+    <div class="grid-lines" aria-hidden="true"></div>
+    <div class="wrap pt-28 pb-16">
+      <p class="tag tag-dot">Error 404</p>
+      <h1 class="display display-xl mt-6" data-split="load">Página <span class="text-gold">perdida.</span></h1>
+      <p class="lead mt-8 max-w-lg" data-reveal>Puede que el enlace esté mal escrito o que la página haya cambiado de dirección.</p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-3" data-reveal>
+        <a href="/" class="btn btn-gold btn-xl" data-magnetic>Volver al inicio <ArrowRight class="arrow w-4 h-4" /></a>
+        <a href="/cursos" class="btn btn-ghost btn-xl">Ver programas</a>
+      </div>
+    </div>
+  </section>
+</Layout>

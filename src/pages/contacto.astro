@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { MapPin, Phone, Mail, MessageCircle, Send, CheckCircle2, ArrowUpRight, AlertCircle } from 'lucide-astro';
+
+// Endpoint de Formspree exclusivo del formulario de contacto
+const formspreeEndpoint = 'https://formspree.io/f/mljjjvrb';
+
+const canales = [
+  { icon: MessageCircle, label: 'WhatsApp', value: '+57 314 557 7521', note: 'La vía más rápida', href: 'https://wa.me/573145577521' },
+  { icon: Phone, label: 'Teléfono', value: '(605) 252 5005', note: 'Secretaría general', href: 'tel:6052525005' },
+  { icon: Mail, label: 'Correo', value: 'contacto@corprovincia.com', note: 'Solicitudes y admisiones', href: 'mailto:contacto@corprovincia.com' },
+  {
+    icon: MapPin,
+    label: 'Sede',
+    value: 'Calle 18 #19B-80',
+    note: 'Sabanalarga, Atlántico',
+    href: 'https://www.google.com/maps/search/?api=1&query=Calle+18+%2319B-80+Sabanalarga+Atl%C3%A1ntico',
+  },
+];
+---
+
+<Layout
+  title="Contacto — Corprovincia Sabanalarga"
+  description="Visítanos en nuestra sede en Sabanalarga, Atlántico: Calle 18 #19B-80. Contáctanos por teléfono (605) 252 5005 o WhatsApp al +57 314 557-7521."
+>
+  <PageHeader
+    eyebrow="Contacto"
+    title="Hablemos de tu"
+    accent="próximo paso."
+    description="Te orientamos sobre programas, horarios y facilidades de pago. Escríbenos o visítanos en la sede."
+  />
+
+  <!-- Canales -->
+  <section class="py-16 sm:py-24">
+    <div class="wrap">
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {canales.map(({ icon: Icon, label, value, note, href }) => (
+          <li data-reveal>
+            <a
+              href={href}
+              target={href.startsWith('http') ? '_blank' : undefined}
+              rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              class="channel spotlight card group flex flex-col h-full p-6 sm:p-7 min-h-[13rem]"
+            >
+              <div class="flex items-start justify-between">
+                <span class="w-12 h-12 rounded-2xl bg-muted text-gold-ink flex items-center justify-center"><Icon class="w-5 h-5" /></span>
+                <ArrowUpRight class="channel-arrow w-5 h-5 text-ink-muted" />
+              </div>
+              <p class="tag mt-auto">{label}</p>
+              <p class={`mt-1.5 font-display font-semibold tracking-tight tabular ${value.includes("@") ? "text-base sm:text-[1.05rem] break-all" : "text-xl"}`}>{value}</p>
+              <p class="text-sm text-ink-muted">{note}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Formulario + horario -->
+  <section class="pb-16 sm:pb-24">
+    <div class="wrap grid lg:grid-cols-12 gap-10 lg:gap-14">
+      <div class="lg:col-span-5">
+        <h2 class="display display-md" data-split>Escríbenos <span class="text-gold-ink">un mensaje.</span></h2>
+        <p class="lead mt-5" data-reveal>Consultas generales, convenios o información académica. Respondemos en menos de 24 horas hábiles.</p>
+
+        <div class="mt-10 rounded-[1.5rem] bg-night text-white p-7 on-dark noise" data-reveal>
+          <p class="tag !text-gold">Horario de atención</p>
+          <dl class="mt-5 space-y-4">
+            <div class="flex justify-between gap-4 border-b border-white/10 pb-4">
+              <dt class="text-white/60">Lunes a viernes</dt>
+              <dd class="text-right font-medium">8:00 a. m. – 12:00 m.<br />2:00 – 6:00 p. m.</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-white/60">Sábados</dt>
+              <dd class="text-right font-medium">8:00 a. m. – 4:00 p. m.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7" data-reveal>
+        <div class="card p-6 sm:p-10">
+          <div id="contact-success" class="hidden text-center py-12" role="status">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center mx-auto">
+              <CheckCircle2 class="w-8 h-8" />
+            </div>
+            <h3 class="mt-6 display display-sm">Mensaje enviado</h3>
+            <p class="mt-3 text-ink-soft max-w-sm mx-auto">Gracias por escribirnos. Te responderemos pronto.</p>
+            <button type="button" id="btn-contact-reset" class="btn btn-secondary mt-7">Enviar otro mensaje</button>
+          </div>
+
+          <form id="general-contact-form" class="space-y-5" action={formspreeEndpoint} method="POST" novalidate>
+            <div>
+              <label for="c_nombre" class="field-label">Nombre completo<span class="req">*</span></label>
+              <input type="text" id="c_nombre" name="nombre" required autocomplete="name" placeholder="Tu nombre y apellido" class="field" />
+              <span class="c-err field-error hidden">Ingresa tu nombre.</span>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label for="c_correo" class="field-label">Correo electrónico<span class="req">*</span></label>
+                <input type="email" id="c_correo" name="email" required autocomplete="email" inputmode="email" placeholder="tucorreo@ejemplo.com" class="field" />
+                <span class="c-err field-error hidden">Ingresa un correo válido.</span>
+              </div>
+              <div>
+                <label for="c_telefono" class="field-label">Teléfono o WhatsApp</label>
+                <input type="tel" id="c_telefono" name="telefono" autocomplete="tel" inputmode="tel" placeholder="314 557 7521" class="field" />
+              </div>
+            </div>
+            <div>
+              <label for="c_asunto" class="field-label">Asunto</label>
+              <input type="text" id="c_asunto" name="asunto" placeholder="Costos, certificados, horarios…" class="field" />
+            </div>
+            <div>
+              <label for="c_mensaje" class="field-label">Mensaje<span class="req">*</span></label>
+              <textarea id="c_mensaje" name="mensaje" rows="5" required placeholder="Escribe tu consulta" class="field resize-y"></textarea>
+              <span class="c-err field-error hidden">Escribe tu mensaje.</span>
+            </div>
+            <div>
+              <button type="submit" id="contact-submit-btn" class="btn btn-primary btn-lg w-full">
+                <Send class="w-4 h-4" /> <span id="contact-submit-label">Enviar mensaje</span>
+              </button>
+              <p id="contact-submit-error" class="hidden mt-3 flex items-center justify-center gap-1.5 text-sm text-rose-600" role="alert">
+                <AlertCircle class="w-4 h-4 shrink-0" />
+                No pudimos enviar tu mensaje. Revisa tu conexión e inténtalo de nuevo, o escríbenos por WhatsApp.
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mapa -->
+  <section class="pb-24 sm:pb-32">
+    <div class="wrap">
+      <div class="relative overflow-hidden rounded-[2rem] border border-line h-[22rem] sm:h-[30rem] bg-muted" data-clip>
+        <iframe
+          title="Ubicación de Corprovincia en Sabanalarga"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15682.493922650742!2d-74.9255655!3d10.6300438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef4396a87c1c045%3A0x6b7724128ee3e895!2sSabanalarga%2C%20Atl%C3%A1ntico!5e0!3m2!1ses!2sco!4v1700000000000!5m2!1ses!2sco"
+          width="100%"
+          height="100%"
+          style="border:0; filter: grayscale(0.4) contrast(1.05);"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+        <div class="absolute left-4 bottom-4 sm:left-6 sm:bottom-6 rounded-2xl bg-night text-white px-5 py-4 shadow-2xl">
+          <p class="tag !text-gold">Sede central</p>
+          <p class="mt-1 font-display text-lg font-semibold">Calle 18 #19B-80, Sabanalarga</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .channel-arrow { transition: transform 600ms var(--ease-expo), color 200ms ease; }
+  .channel { transition: transform 160ms var(--ease-out), border-color 300ms ease; }
+  .channel:active { transform: scale(0.98); }
+  @media (hover: hover) and (pointer: fine) {
+    .channel:hover .channel-arrow { transform: rotate(45deg); color: var(--ink); }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('general-contact-form') as HTMLFormElement | null;
+  const successDiv = document.getElementById('contact-success');
+  const resetBtn = document.getElementById('btn-contact-reset');
+
+  if (form && successDiv) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = (form.querySelector('#c_nombre') as HTMLInputElement).value.trim();
+      const correo = (form.querySelector('#c_correo') as HTMLInputElement).value.trim();
+      const mensaje = (form.querySelector('#c_mensaje') as HTMLTextAreaElement).value.trim();
+
+      let firstInvalid: HTMLElement | null = null;
+      const check = (ok: boolean, el: HTMLElement | null) => {
+        el?.closest('div')?.querySelector('.c-err')?.classList.toggle('hidden', ok);
+        el?.setAttribute('aria-invalid', String(!ok));
+        if (!ok && !firstInvalid) firstInvalid = el;
+      };
+      check(!!nombre, form.querySelector('#c_nombre'));
+      check(/^\S+@\S+\.\S+$/.test(correo), form.querySelector('#c_correo'));
+      check(!!mensaje, form.querySelector('#c_mensaje'));
+
+      if (firstInvalid) {
+        (firstInvalid as HTMLElement).focus();
+        return;
+      }
+
+      // Enviar a Formspree
+      const submitBtn = document.getElementById('contact-submit-btn') as HTMLButtonElement | null;
+      const submitLabel = document.getElementById('contact-submit-label');
+      const submitError = document.getElementById('contact-submit-error');
+      submitError?.classList.add('hidden');
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitLabel) submitLabel.textContent = 'Enviando…';
+
+      const data = new FormData(form);
+      const asunto = (form.querySelector('#c_asunto') as HTMLInputElement).value.trim();
+      data.set('_subject', `Nuevo mensaje de contacto${asunto ? `: ${asunto}` : ''} — ${nombre}`);
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(`Formspree respondió ${res.status}`);
+      } catch (err) {
+        console.error(err);
+        submitError?.classList.remove('hidden');
+        return;
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitLabel) submitLabel.textContent = 'Enviar mensaje';
+      }
+
+      form.classList.add('hidden');
+      successDiv.classList.remove('hidden');
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      form.reset();
+      form.classList.remove('hidden');
+      successDiv.classList.add('hidden');
+    });
+  }
+</script>

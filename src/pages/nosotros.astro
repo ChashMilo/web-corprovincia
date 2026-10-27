@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { ArrowRight, ShieldCheck, Heart, Award, Users, Target, Eye } from 'lucide-astro';
+
+const principios = [
+  { icon: ShieldCheck, title: 'Ética y responsabilidad', desc: 'Compromiso con la legalidad, el rigor académico y la transparencia.' },
+  { icon: Heart, title: 'Sentido humano', desc: 'Acompañamiento cercano a las necesidades y el ritmo de cada estudiante.' },
+  { icon: Award, title: 'Excelencia práctica', desc: 'Aprender haciendo, con herramientas reales del entorno productivo.' },
+  { icon: Users, title: 'Inclusión social', desc: 'Educación accesible, con tarifas justas y horarios adaptables.' },
+];
+
+const alianzas = [
+  'Sector comercial de Sabanalarga',
+  'Empresas de seguridad y SST',
+  'Alianzas de formación técnica',
+  'Convenios de emprendimiento regional',
+];
+---
+
+<Layout
+  title="Nosotros — Misión, visión y principios | Corprovincia"
+  description="Conoce la Corporación Educativa de la Provincia (Corprovincia): nuestra misión, visión y compromiso con la educación en Sabanalarga y el Atlántico."
+>
+  <PageHeader
+    eyebrow="Identidad institucional"
+    title="Educación que abre"
+    accent="puertas reales."
+    description="Acercamos la formación técnica laboral y el bachillerato a Sabanalarga y los municipios vecinos, con un modelo práctico y flexible."
+  />
+
+  <!-- Propósito -->
+  <section class="py-24 sm:py-32">
+    <div class="wrap grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div class="lg:col-span-6">
+        <p class="tag tag-dot" data-reveal>Por qué existimos</p>
+        <h2 class="display display-md mt-6" data-split>Pensado para la vida <span class="text-gold-ink">real de la región.</span></h2>
+        <div class="mt-8 space-y-5 text-lg text-ink-soft leading-relaxed max-w-[60ch]" data-reveal>
+          <p>
+            La <strong class="text-ink font-semibold">Corporación Educativa de la Provincia</strong> nace para
+            democratizar la educación técnica y el bachillerato en Sabanalarga. Conocemos los retos de
+            transporte, horarios laborales y costos de la educación tradicional, y por eso diseñamos una
+            oferta práctica y flexible.
+          </p>
+          <p>
+            Con el <strong class="text-ink font-semibold">Instituto de Educación para el Trabajo y Desarrollo
+            Humano de la Provincia (I.E.T de la Provincia)</strong>, que ofrece los técnicos laborales y los
+            cursos cortos, y el <strong class="text-ink font-semibold">Liceo Alcira Colón de Ahumada</strong>,
+            queremos que cada estudiante salga preparado para trabajar, emprender o seguir estudiando.
+          </p>
+        </div>
+        <div class="mt-10 inline-flex items-center gap-4 rounded-2xl bg-gold-soft px-5 py-4" data-reveal>
+          <span class="w-11 h-11 rounded-full bg-night text-gold flex items-center justify-center font-mono text-xs">01</span>
+          <p class="text-sm text-ink"><strong class="font-semibold">Estamos formando nuestra primera promoción.</strong><br class="hidden sm:block" /> Inscríbete y sé parte de ella.</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+        <div class="aspect-[3/4] rounded-[1.75rem] overflow-hidden mt-12" data-clip>
+          <img src="/images/nosotros/clase-practica-dron.webp" alt="Docente explicando a estudiantes el manejo de un dron en una clase práctica al aire libre" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="aspect-[3/4] rounded-[1.75rem] overflow-hidden" data-clip>
+          <img src="/images/nosotros/estudiantes-congreso-mun.webp" alt="Estudiantes del Liceo mostrando sus escarapelas de participantes en el Modelo Municipal de Naciones de Sabanalarga" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Misión y visión -->
+  <section class="on-dark noise py-24 sm:py-32">
+    <div class="aurora opacity-70" aria-hidden="true"><span class="a1"></span><span class="a2"></span></div>
+    <div class="wrap">
+    <div class="grid lg:grid-cols-2 gap-px rounded-[2rem] overflow-hidden bg-white/10 border border-white/10">
+      <div class="bg-night/90 p-8 sm:p-12 lg:p-14" data-reveal>
+        <Target class="w-8 h-8 text-gold" />
+        <p class="tag mt-10">Misión</p>
+        <p class="mt-4 font-display text-xl sm:text-2xl font-medium leading-snug tracking-tight">
+          La Corporación Educativa de la Provincia tiene como misión desarrollar competencias duras y blandas
+          con enfoque diferencial a través de modelos y programas educativos flexibles que respondan a las
+          necesidades laborales y productivas del mundo actual, apoyándose en el conocimiento de idiomas, nuevas
+          tecnologías y sistemas de información, y promoviendo la innovación y la capacidad de adaptación en
+          entornos organizacionales dinámicos y digitales, contribuyendo así al crecimiento económico y social
+          de la región y del país.
+        </p>
+      </div>
+      <div class="bg-night/90 p-8 sm:p-12 lg:p-14" data-reveal>
+        <Eye class="w-8 h-8 text-gold" />
+        <p class="tag mt-10">Visión</p>
+        <p class="mt-4 font-display text-xl sm:text-2xl font-medium leading-snug tracking-tight">
+          En el 2030, la Corporación Educativa de la Provincia será una institución técnica reconocida a nivel
+          regional y nacional por la excelencia en la formación en ciencias administrativas y sistemas de
+          información, caracterizada por su liderazgo, capacidad innovadora y compromiso con el desarrollo
+          empresarial y tecnológico, con programas actualizados, ambientes virtuales de aprendizaje y una
+          estrecha articulación con el sector productivo.
+        </p>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- Principios -->
+  <section class="py-24 sm:py-32">
+    <div class="wrap">
+      <h2 class="display display-lg max-w-3xl" data-split>Principios que <span class="text-gold-ink">nos guían.</span></h2>
+      <ul class="mt-16 border-t border-line">
+        {principios.map(({ icon: Icon, title, desc }, i) => (
+          <li class="principle group grid grid-cols-[auto_1fr] md:grid-cols-[6rem_1fr_1fr_auto] items-center gap-x-6 gap-y-2 py-8 border-b border-line" data-reveal>
+            <span class="font-mono text-sm text-ink-muted tabular row-span-2 md:row-span-1">0{i + 1}</span>
+            <h3 class="font-display text-2xl sm:text-4xl font-semibold tracking-tight">{title}</h3>
+            <p class="text-ink-soft md:max-w-sm">{desc}</p>
+            <span class="principle-icon hidden md:flex w-14 h-14 rounded-full bg-muted items-center justify-center">
+              <Icon class="w-6 h-6 text-gold-ink" />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Alianzas -->
+  <section class="pb-24 sm:pb-32">
+    <div class="wrap">
+      <div class="rounded-[2rem] bg-surface border border-line p-8 sm:p-12 grid lg:grid-cols-12 gap-10 items-center" data-reveal>
+        <div class="lg:col-span-5">
+          <p class="tag tag-dot">Alianzas</p>
+          <h2 class="display display-sm mt-5">De la mano del sector productivo.</h2>
+          <p class="mt-4 text-ink-soft">
+            Trabajamos con empresas e instituciones del Atlántico para facilitar prácticas y vinculación
+            laboral de nuestros estudiantes.
+          </p>
+          <a href="/contacto" class="ulink mt-6 text-ink">Proponer un convenio <ArrowRight class="w-4 h-4" /></a>
+        </div>
+        <ul class="lg:col-span-7 grid sm:grid-cols-2 gap-3">
+          {alianzas.map((a) => (
+            <li class="rounded-2xl bg-muted px-5 py-5 font-medium text-ink-soft">{a}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .principle-icon { transition: transform 600ms var(--ease-expo), background-color 300ms ease; }
+  @media (hover: hover) and (pointer: fine) {
+    .principle:hover .principle-icon { transform: rotate(-12deg) scale(1.08); background: var(--color-gold-soft); }
+  }
+</style>
