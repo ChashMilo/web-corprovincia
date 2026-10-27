@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { ArrowUpRight, GraduationCap } from 'lucide-astro';
+
+const allCursos = await getCollection('cursos');
+// Primero los técnicos, luego el resto en orden alfabético
+const sortedCursos = allCursos.sort((a, b) => {
+  if (a.data.categoria === 'tecnico' && b.data.categoria !== 'tecnico') return -1;
+  if (a.data.categoria !== 'tecnico' && b.data.categoria === 'tecnico') return 1;
+  return a.data.nombre.localeCompare(b.data.nombre);
+});
+
+const count = (cat: string) => allCursos.filter((c) => c.data.categoria === cat).length;
+const filtros = [
+  { value: 'all', label: 'Todos', n: allCursos.length },
+  { value: 'tecnico', label: 'Técnicos laborales', n: count('tecnico') },
+  { value: 'curso_corto', label: 'Cursos cortos', n: count('curso_corto') },
+];
+---
+
+<Layout
+  title="Programas — Cursos cortos y técnicos laborales | Corprovincia"
+  description="Explora todos los programas académicos de Corprovincia en Sabanalarga: Técnicos auxiliares en horarios tarde y sábados, y cursos cortos de alta demanda laboral."
+>
+  <PageHeader
+    eyebrow="I.E.T de la Provincia · Oferta 2026"
+    title="Encuentra el programa que"
+    accent="te mueve."
+    description="Técnicos laborales por competencias y cursos cortos del Instituto de Educación para el Trabajo y Desarrollo Humano de la Provincia (I.E.T de la Provincia)."
+  />
+
+  <section class="py-14 sm:py-20">
+    <div class="wrap">
+      <div class="sticky top-[5.5rem] sm:top-24 z-30 mb-10 flex items-center justify-between gap-4 pointer-events-none">
+        <div
+          role="group"
+          aria-label="Filtrar programas por categoría"
+          class="filters pointer-events-auto inline-flex max-w-full overflow-x-auto sm:overflow-visible p-1.5 rounded-full"
+        >
+          {filtros.map((f) => (
+            <button
+              type="button"
+              data-filter={f.value}
+              aria-pressed={f.value === 'all' ? 'true' : 'false'}
+              class="filter-btn relative whitespace-nowrap px-4 sm:px-5 py-2.5 rounded-full text-sm font-medium"
+            >
+              {f.label}
+              <span class="ml-1.5 font-mono text-xs opacity-60 tabular">{f.n}</span>
+            </button>
+          ))}
+        </div>
+        <p id="results-count" class="results pointer-events-auto hidden sm:block font-mono text-xs uppercase tracking-wider text-ink-muted px-4 py-2.5 rounded-full" aria-live="polite">
+          {allCursos.length} programas
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5" id="courses-grid">
+        {sortedCursos.map((curso, i) => (
+          <div class="course-item" data-category={curso.data.categoria} data-reveal>
+            <CourseCard
+              nombre={curso.data.nombre}
+              slug={curso.data.slug}
+              categoria={curso.data.categoria}
+              resumen={curso.data.resumen}
+              imagen={curso.data.imagen}
+              duracion={curso.data.duracion}
+              index={i}
+            />
+          </div>
+        ))}
+      </div>
+
+      <a
+        href="/liceo"
+        class="liceo-cta group mt-16 flex flex-col md:flex-row md:items-center justify-between gap-6 rounded-[2rem] bg-gold-soft p-8 sm:p-12"
+        data-reveal
+      >
+        <div class="flex items-start gap-5">
+          <span class="w-14 h-14 rounded-2xl bg-night text-gold flex items-center justify-center shrink-0">
+            <GraduationCap class="w-6 h-6" />
+          </span>
+          <div>
+            <p class="tag !text-gold-ink">Liceo Alcira Colón · Jornada mañana</p>
+            <p class="display display-sm mt-2">¿Quieres terminar el bachillerato con doble titulación?</p>
+          </div>
+        </div>
+        <span class="liceo-arrow w-16 h-16 rounded-full bg-night text-white flex items-center justify-center shrink-0">
+          <ArrowUpRight class="w-6 h-6" />
+        </span>
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .filters {
+    background: rgb(255 255 255 / 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 30px -15px rgb(10 9 32 / 0.25);
+    scrollbar-width: none;
+  }
+  .results {
+    background: rgb(255 255 255 / 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--line);
+  }
+  .filter-btn {
+    color: var(--ink-soft);
+    transition: background-color 300ms ease, color 300ms ease, transform 160ms var(--ease-out);
+  }
+  .filter-btn:active { transform: scale(0.96); }
+  .filter-btn[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .liceo-arrow { transition: transform 600ms var(--ease-expo), background-color 300ms ease; }
+  @media (hover: hover) and (pointer: fine) {
+    .filter-btn[aria-pressed="false"]:hover { color: var(--ink); background: rgb(15 14 44 / 0.05); }
+    .liceo-cta:hover .liceo-arrow { transform: rotate(45deg); background: var(--color-navy); }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('.course-item');
+  const resultsCount = document.getElementById('results-count');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setCategory(cat: string, animate = false) {
+    if (![...buttons].some((b) => b.dataset.filter === cat)) cat = 'all';
+    let visible = 0;
+    const shown: HTMLElement[] = [];
+
+    buttons.forEach((btn) => btn.setAttribute('aria-pressed', String(btn.dataset.filter === cat)));
+    items.forEach((item) => {
+      const show = cat === 'all' || item.dataset.category === cat;
+      item.classList.toggle('hidden', !show);
+      if (show) {
+        visible++;
+        shown.push(item);
+      }
+    });
+
+    if (resultsCount) resultsCount.textContent = `${visible} ${visible === 1 ? 'programa' : 'programas'}`;
+
+    if (animate) {
+      const url = new URL(window.location.href);
+      if (cat === 'all') url.searchParams.delete('cat');
+      else url.searchParams.set('cat', cat);
+      history.replaceState(null, '', url);
+
+      if (!reduced) {
+        gsap.fromTo(shown, { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'expo.out', stagger: 0.05, overwrite: true });
+      }
+      ScrollTrigger.refresh();
+    }
+  }
+
+  buttons.forEach((btn) => btn.addEventListener('click', () => setCategory(btn.dataset.filter || 'all', true)));
+  setCategory(new URLSearchParams(window.location.search).get('cat') || 'all');
+</script>

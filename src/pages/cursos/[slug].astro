@@ -1,0 +1,123 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { Clock, Calendar, Award, FileText, ArrowUpRight, MessageCircle, ArrowRight } from 'lucide-astro';
+
+export async function getStaticPaths() {
+  const cursos = await getCollection('cursos');
+  return cursos.map((curso) => ({
+    params: { slug: curso.data.slug },
+    props: { curso },
+  }));
+}
+
+const { curso } = Astro.props;
+const { Content } = await render(curso);
+
+const allCursos = await getCollection('cursos');
+let relatedCursos = allCursos
+  .filter((c) => c.data.slug !== curso.data.slug && c.data.categoria === curso.data.categoria)
+  .slice(0, 3);
+if (relatedCursos.length === 0) {
+  relatedCursos = allCursos.filter((c) => c.data.slug !== curso.data.slug).slice(0, 3);
+}
+
+const isTecnico = curso.data.categoria === 'tecnico';
+const categoriaLabel = `I.E.T de la Provincia · ${isTecnico ? 'Técnico laboral auxiliar' : 'Curso corto de capacitación'}`;
+const waHref = `https://wa.me/573145577521?text=${encodeURIComponent(`Hola, quisiera recibir más información sobre el programa ${curso.data.nombre}`)}`;
+
+const ficha = [
+  { icon: Clock, label: 'Duración', value: curso.data.duracion },
+  { icon: Calendar, label: 'Horario', value: curso.data.horario || 'Presencial con talleres prácticos' },
+  { icon: FileText, label: 'Requisitos', value: curso.data.requisitos },
+  { icon: Award, label: 'Certificación', value: curso.data.certificacion },
+].filter((f) => f.value);
+---
+
+<Layout
+  title={`${curso.data.nombre} — Corprovincia Sabanalarga`}
+  description={curso.data.resumen}
+  image={curso.data.imagen}
+>
+  <PageHeader
+    eyebrow={categoriaLabel}
+    title={curso.data.nombre}
+    description={curso.data.resumen}
+    image={curso.data.imagen}
+    back={{ label: 'Todos los programas', href: '/cursos' }}
+    compact
+  >
+    <div class="mt-9 flex flex-col sm:flex-row gap-3" data-reveal>
+      <a href={`/inscripcion?curso=${curso.data.slug}`} class="btn btn-gold btn-lg" data-magnetic>
+        Inscribirme <span class="btn-icon"><ArrowUpRight class="w-4 h-4" /></span>
+      </a>
+      <a href={waHref} target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-lg">
+        <MessageCircle class="w-4 h-4" /> Preguntar por WhatsApp
+      </a>
+    </div>
+  </PageHeader>
+
+  <!-- Ficha en franja -->
+  <section class="border-b border-line bg-surface">
+    <dl class="wrap grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {ficha.map(({ icon: Icon, label, value }, i) => (
+        <div class={`py-7 sm:py-9 sm:px-6 first:sm:pl-0 border-line ${i > 0 ? 'border-t sm:border-t-0' : ''} ${i % 2 === 1 ? 'sm:border-l' : ''} ${i >= 2 ? 'lg:border-l sm:border-t lg:border-t-0' : ''}`} data-reveal>
+          <dt class="flex items-center gap-2 tag"><Icon class="w-3.5 h-3.5 text-gold-ink" />{label}</dt>
+          <dd class="mt-3 text-[0.95rem] font-medium text-ink leading-snug">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="py-20 sm:py-28">
+    <div class="wrap grid lg:grid-cols-12 gap-14">
+      <aside class="lg:col-span-4 order-2 lg:order-1">
+        <div class="lg:sticky lg:top-28 rounded-[1.75rem] bg-night text-white p-7 sm:p-8 on-dark noise">
+          <div class="aurora opacity-60" aria-hidden="true"><span class="a2"></span></div>
+          <p class="tag !text-gold">Matrículas abiertas</p>
+          <p class="mt-4 font-display text-2xl font-semibold tracking-tight leading-tight">
+            Asegura tu cupo en {curso.data.nombre}.
+          </p>
+          <p class="mt-3 text-sm text-white/60">Cupos limitados por grupo. Te contactamos para confirmar horario y pagos.</p>
+          <a href={`/inscripcion?curso=${curso.data.slug}`} class="btn btn-gold btn-lg w-full mt-7">
+            Inscribirme ahora <ArrowRight class="arrow w-4 h-4" />
+          </a>
+        </div>
+      </aside>
+
+      <article class="lg:col-span-8 order-1 lg:order-2">
+        <div class="prose-corpro max-w-[70ch]" data-reveal>
+          <Content />
+        </div>
+      </article>
+    </div>
+  </section>
+
+  {relatedCursos.length > 0 && (
+    <section class="pb-24 sm:pb-32">
+      <div class="wrap">
+        <div class="flex items-end justify-between gap-6 mb-10">
+          <h2 class="display display-md" data-split>Sigue <span class="text-gold-ink">explorando.</span></h2>
+          <a href="/cursos" class="hidden sm:inline-flex ulink text-ink shrink-0">Ver todos <ArrowRight class="w-4 h-4" /></a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+          {relatedCursos.map((rel, i) => (
+            <div data-reveal>
+              <CourseCard
+                nombre={rel.data.nombre}
+                slug={rel.data.slug}
+                categoria={rel.data.categoria}
+                resumen={rel.data.resumen}
+                imagen={rel.data.imagen}
+                duracion={rel.data.duracion}
+                index={i}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>
