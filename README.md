@@ -1,46 +1,51 @@
-# Astro Starter Kit: Basics
+# Corprovincia — Sitio web
 
-```sh
-npm create astro@latest -- --template basics
-```
+Sitio web de la **Corporación Educativa de la Provincia** (Sabanalarga, Atlántico): técnicos laborales, cursos cortos y bachillerato con doble titulación en el Liceo Alcira Colón de Ahumada.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Versión actual:** V1 (`v1.0.0`). Ver [CHANGELOG.md](CHANGELOG.md).
 
-## 🚀 Project Structure
+Construido con [Astro](https://astro.build), Tailwind CSS, GSAP y Lenis.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Comandos
+
+| Comando           | Acción                                               |
+| :---------------- | :--------------------------------------------------- |
+| `npm install`     | Instala las dependencias                             |
+| `npm run dev`     | Servidor de desarrollo en `http://localhost:4321`    |
+| `npm run build`   | Genera el sitio de producción en `./dist/`           |
+| `npm run preview` | Previsualiza el sitio generado antes de publicarlo   |
+
+## Estructura
 
 ```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+public/
+  images/
+    home/       Fotos de la página de inicio
+    liceo/      Fotos de la página del Liceo
+    nosotros/   Fotos de la página Nosotros
+    docentes/   Fotos del equipo docente (inicio)
+    cursos/     Imágenes de los cursos
+src/
+  components/   Header, Footer, formularios, logos y tarjetas
+  content/
+    cursos/     Un archivo .md por curso (nombre, horario, imagen, descripción)
+  layouts/      Plantilla base (SEO, fuentes, header y footer)
+  pages/        Inicio, Cursos, Liceo, Nosotros, Contacto, Inscripción y 404
+  scripts/      Animaciones (motion.ts)
+  styles/       Estilos globales
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Imágenes
 
-## 🧞 Commands
+Las fotos se guardan en `public/images/<página>/` en formato **WebP**, redimensionadas al ancho que necesita cada espacio (unos 700–1600 px), para que la web cargue rápido.
 
-All commands are run from the root of the project, from a terminal:
+## Formularios (Formspree)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| Formulario  | Archivo                                 | Endpoint                            |
+| :---------- | :-------------------------------------- | :---------------------------------- |
+| Inscripción | `src/components/InscripcionForm.astro`  | `https://formspree.io/f/xgaaarde`   |
+| Contacto    | `src/pages/contacto.astro`              | `https://formspree.io/f/mljjjvrb`   |
 
-## 👀 Want to learn more?
+## Agregar o editar un curso
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Crea o edita un archivo en `src/content/cursos/`. El campo `slug` define la URL (`/cursos/<slug>`). Si agregas un curso nuevo, añádelo también a la lista de programas en `src/components/InscripcionForm.astro`.
