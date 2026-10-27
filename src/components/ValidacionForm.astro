@@ -1,0 +1,245 @@
+---
+import { CheckCircle2, Send, Award, FileText } from 'lucide-astro';
+---
+
+<div class="card p-6 sm:p-8 relative overflow-hidden border-corpro-gold/40">
+
+  <!-- Estado de confirmación exitoso -->
+  <div id="val-form-success" class="hidden text-center py-8 space-y-4" role="status">
+    <div class="w-14 h-14 rounded-full bg-corpro-gold/15 text-gold-ink flex items-center justify-center mx-auto">
+      <CheckCircle2 class="w-7 h-7" />
+    </div>
+    <h3 class="font-display text-2xl font-semibold text-ink">Solicitud registrada</h3>
+    <p class="text-ink-soft max-w-md mx-auto text-sm leading-relaxed">
+      Tu requerimiento de <strong>Validación de Bachillerato</strong> para el Liceo Alcira Colón de Ahumada ha sido recibido. La secretaría académica evaluará tus antecedentes escolares y te contactará.
+    </p>
+    <div class="pt-4 flex flex-col sm:flex-row justify-center gap-3">
+      <a
+        id="val-wa-link"
+        href="https://wa.me/573145577521"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-whatsapp"
+      >
+        Agilizar por WhatsApp
+      </a>
+      <button
+        type="button"
+        id="val-btn-reset"
+        class="btn btn-secondary"
+      >
+        Enviar otra solicitud
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <form id="validacion-form" class="space-y-5" novalidate>
+    <div>
+      <p class="inline-flex items-center gap-1.5 text-xs font-medium text-gold-ink">
+        <Award class="w-3.5 h-3.5" />
+        Liceo Alcira Colón de Ahumada
+      </p>
+      <h3 class="mt-2 font-display text-2xl font-semibold text-ink">Solicitud de validación</h3>
+      <p class="text-sm text-ink-muted mt-1">Obtén tu título de bachiller académico con doble titulación técnica laboral mediante validación por ciclos.</p>
+    </div>
+
+    <!-- Nombre y Documento -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="val_nombre" class="field-label">
+          Nombre completo<span class="req">*</span>
+        </label>
+        <input
+          type="text"
+          id="val_nombre"
+          name="val_nombre"
+          required
+          placeholder="Nombres y apellidos completos"
+          class="field"
+        />
+        <span class="val-error field-error hidden">Campo obligatorio.</span>
+      </div>
+
+      <div>
+        <label for="val_doc" class="field-label">
+          Tipo y Nº de documento<span class="req">*</span>
+        </label>
+        <div class="flex gap-2">
+          <select
+            id="val_tipo_doc"
+            name="val_tipo_doc"
+            class="field field-select-compact"
+          >
+            <option value="CC">C.C.</option>
+            <option value="TI">T.I.</option>
+            <option value="CE">C.E.</option>
+            <option value="PPT">PPT</option>
+          </select>
+          <input
+            type="text"
+            id="val_doc"
+            name="val_doc"
+            required
+            placeholder="Nº de identificación"
+            class="field flex-1 min-w-0"
+          />
+        </div>
+        <span class="val-error field-error hidden">Ingresa el documento.</span>
+      </div>
+    </div>
+
+    <!-- Teléfono y Correo -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="val_tel" class="field-label">
+          Teléfono / WhatsApp<span class="req">*</span>
+        </label>
+        <input
+          type="tel"
+          id="val_tel"
+          name="val_tel"
+          required
+          placeholder="Ej. 314 557 7521"
+          class="field"
+        />
+        <span class="val-error field-error hidden">Ingresa tu número telefónico.</span>
+      </div>
+
+      <div>
+        <label for="val_correo" class="field-label">
+          Correo electrónico<span class="req">*</span>
+        </label>
+        <input
+          type="email"
+          id="val_correo"
+          name="val_correo"
+          required
+          placeholder="tucorreo@ejemplo.com"
+          class="field"
+        />
+        <span class="val-error field-error hidden">Ingresa un correo válido.</span>
+      </div>
+    </div>
+
+    <!-- Último grado cursado y motivo -->
+    <div>
+      <label for="val_motivo" class="field-label">
+        Último grado cursado y motivo de la validación<span class="req">*</span>
+      </label>
+      <textarea
+        id="val_motivo"
+        name="val_motivo"
+        rows="3"
+        required
+        placeholder="Ej: Cursé hasta 9º grado en 2021. Necesito validar 10º y 11º para aspirar a un ascenso laboral o ingresar a la universidad..."
+        class="field"
+      ></textarea>
+      <span class="val-error field-error hidden">Por favor describe tu último grado aprobado y el motivo.</span>
+    </div>
+
+    <!-- Tratamiento de datos personales -->
+    <div class="bg-muted/70 p-4 rounded-xl">
+      <div class="flex items-start gap-2.5">
+        <input
+          type="checkbox"
+          id="val_habeas"
+          name="val_habeas"
+          required
+          class="checkbox mt-0.5"
+        />
+        <label for="val_habeas" class="text-xs text-ink-soft leading-relaxed cursor-pointer">
+          Acepto el tratamiento de datos personales de acuerdo con la Ley 1581 de 2012 con fines exclusivos de validación académica en el <strong>Liceo Alcira Colón de Ahumada / Corprovincia</strong>.<span class="req">*</span>
+        </label>
+      </div>
+      <span id="val-habeas-error" class="val-error field-error hidden">Aceptación requerida.</span>
+    </div>
+
+    <div>
+      <button
+        type="submit"
+        class="btn btn-gold btn-lg w-full"
+      >
+        <Send class="w-4 h-4" />
+        Enviar solicitud de validación
+      </button>
+      <p class="text-center text-xs text-ink-muted mt-3">
+        Asunto oficial: <em>[Solicitud de Validación de Bachillerato - Liceo Alcira Colón]</em>
+      </p>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('validacion-form') as HTMLFormElement | null;
+    const successDiv = document.getElementById('val-form-success');
+    const resetBtn = document.getElementById('val-btn-reset');
+
+    if (form && successDiv) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nombre = (form.querySelector('#val_nombre') as HTMLInputElement).value.trim();
+        const doc = (form.querySelector('#val_doc') as HTMLInputElement).value.trim();
+        const tel = (form.querySelector('#val_tel') as HTMLInputElement).value.trim();
+        const correo = (form.querySelector('#val_correo') as HTMLInputElement).value.trim();
+        const motivo = (form.querySelector('#val_motivo') as HTMLTextAreaElement).value.trim();
+        const habeas = (form.querySelector('#val_habeas') as HTMLInputElement).checked;
+
+        let hasError = false;
+
+        const checkField = (val: boolean, elSelector: string) => {
+          const el = form.querySelector(elSelector);
+          const err = el?.closest('div:has(> .val-error)')?.querySelector('.val-error');
+          if (!val) {
+            err?.classList.remove('hidden');
+            hasError = true;
+          } else {
+            err?.classList.add('hidden');
+          }
+        };
+
+        checkField(!!nombre, '#val_nombre');
+        checkField(!!doc, '#val_doc');
+        checkField(tel.length >= 7, '#val_tel');
+        checkField(correo.includes('@'), '#val_correo');
+        checkField(!!motivo, '#val_motivo');
+
+        const habErr = document.getElementById('val-habeas-error');
+        if (!habeas) {
+          habErr?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          habErr?.classList.add('hidden');
+        }
+
+        if (hasError) {
+          const firstErr = form.querySelector('.field-error:not(.hidden)');
+          (firstErr?.parentElement?.querySelector('input, select, textarea') as HTMLElement | null)?.focus();
+          return;
+        }
+
+        // Armar enlace WA
+        const waLink = document.getElementById('val-wa-link') as HTMLAnchorElement | null;
+        if (waLink) {
+          const text = encodeURIComponent(
+            `Hola Liceo Alcira Colón / Corprovincia, solicito validación de bachillerato. Nombre: ${nombre}, Tel: ${tel}, Grado a validar: ${motivo.slice(0, 80)}...`
+          );
+          waLink.href = `https://wa.me/573145577521?text=${text}`;
+        }
+
+        form.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          form.reset();
+          form.classList.remove('hidden');
+          successDiv.classList.add('hidden');
+        });
+      }
+    }
+  });
+</script>

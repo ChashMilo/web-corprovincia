@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InscripcionForm from '../components/InscripcionForm.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { MessageCircle } from 'lucide-astro';
+
+// El programa preseleccionado (?curso=...) se lee en el cliente dentro del formulario
+const pasos = [
+  { title: 'Diligencia el formulario', desc: 'Ingresa tus datos y elige el programa que te interesa.' },
+  { title: 'Te contacta admisiones', desc: 'Te escribimos por WhatsApp para confirmar horarios y facilidades de pago.' },
+  { title: 'Entrega de documentos', desc: 'Copia de tu documento y certificados, en la sede o por correo.' },
+  { title: 'Empiezas clases', desc: 'Comienza tu formación práctica.' },
+];
+---
+
+<Layout
+  title="Inscripción — Corprovincia"
+  description="Inscríbete en nuestros cursos cortos, técnicos laborales auxiliares o bachillerato con doble titulación en Sabanalarga, Atlántico."
+>
+  <PageHeader
+    eyebrow="Admisiones 2026"
+    title="Tu lugar"
+    accent="te espera."
+    description="Completa tu inscripción en pocos minutos. Un asesor te contactará para los pasos finales de la matrícula."
+  >
+    <ol class="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/10 bg-white/10" data-reveal>
+      {pasos.map(({ title, desc }, i) => (
+        <li class="bg-night/80 backdrop-blur p-5">
+          <span class="font-mono text-xs text-gold tabular">0{i + 1}</span>
+          <p class="mt-3 font-semibold">{title}</p>
+          <p class="mt-1 text-sm text-white/55 leading-relaxed">{desc}</p>
+        </li>
+      ))}
+    </ol>
+  </PageHeader>
+
+  <section class="py-16 sm:py-24">
+    <div class="wrap grid lg:grid-cols-12 gap-10 items-start">
+      <div class="lg:col-span-8" data-reveal>
+        <InscripcionForm />
+      </div>
+      <aside class="lg:col-span-4 lg:sticky lg:top-28 space-y-4" data-reveal>
+        <div class="rounded-[1.5rem] bg-gold-soft p-7">
+          <p class="display display-sm">¿Prefieres hablar con alguien?</p>
+          <p class="mt-3 text-ink-soft">Secretaría resuelve tus dudas por WhatsApp.</p>
+          <a href="https://wa.me/573145577521" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg mt-6 w-full">
+            <MessageCircle class="w-4 h-4" /> Chatear con un asesor
+          </a>
+        </div>
+        <div class="rounded-[1.5rem] border border-line p-7">
+          <p class="tag">Bachillerato</p>
+          <p class="mt-2 text-ink-soft text-sm leading-relaxed">
+            El bachillerato regular del Liceo Alcira Colón se dicta en <strong class="text-ink">jornada mañana</strong>.
+            Técnicos laborales: tardes y sábados.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>

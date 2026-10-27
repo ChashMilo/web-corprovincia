@@ -1,0 +1,725 @@
+---
+import { CheckCircle2, Send, ShieldCheck, AlertCircle, Clock, Info, Users } from 'lucide-astro';
+
+interface Props {
+  selectedProgram?: string;
+  isModal?: boolean;
+}
+
+const { selectedProgram = '', isModal = false } = Astro.props;
+
+// Lista minimalista y ordenada por categorías limpias
+const programOptions = [
+  {
+    group: 'Bachillerato',
+    items: [
+      { value: 'liceo', label: 'Bachillerato con Doble Titulación (Liceo Alcira Colón)' },
+      { value: 'validacion-bachillerato', label: 'Validación de Bachillerato por Ciclos' }
+    ]
+  },
+  {
+    group: 'Técnicos Laborales Auxiliares',
+    items: [
+      { value: 'tecnico-seguridad-laboral', label: 'Técnico en Seguridad Laboral' },
+      { value: 'tecnico-gestion-administrativa', label: 'Técnico en Gestión Administrativa' },
+      { value: 'tecnico-gestion-contable', label: 'Técnico en Gestión Contable y Financiera' }
+    ]
+  },
+  {
+    group: 'Cursos Cortos de Capacitación',
+    items: [
+      { value: 'fundamentos-fotografia', label: 'Fundamentos de Fotografía' },
+      { value: 'marketing-digital', label: 'Marketing Digital y Redes Sociales' },
+      { value: 'ingles-pre-universitario', label: 'Inglés Pre-Universitario' },
+      { value: 'informatica-pre-universitaria', label: 'Informática Pre-Universitaria' },
+      { value: 'barberia', label: 'Barbería y Estilismo Masculino' },
+      { value: 'belleza-maquillaje-social', label: 'Maquillaje Social y de Eventos' },
+      { value: 'belleza-cuidado-de-la-piel', label: 'Cuidado de la Piel y Facial' },
+      { value: 'belleza-cuidado-del-cabello', label: 'Cuidado del Cabello y Tratamientos' },
+      { value: 'belleza-unas-manos-y-pies', label: 'Uñas, Manos y Pies (Manicure)' }
+    ]
+  }
+];
+
+const gradosLiceo = [
+  '6°', '7°', '8°', '9°', '10°', '11°'
+];
+
+// Endpoint de Formspree (https://formspree.io → New form → copiar la URL)
+const formspreeEndpoint = 'https://formspree.io/f/xgaaarde';
+---
+
+
+<div class={`card p-6 sm:p-10 ${isModal ? 'max-w-2xl mx-auto' : ''}`}>
+  <!-- Estado de Confirmación Exitoso -->
+  <div id="form-success" class="hidden text-center py-10 space-y-4" role="status">
+    <div class="w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+      <CheckCircle2 class="w-7 h-7" />
+    </div>
+    <h3 class="font-display text-2xl font-semibold text-ink">Recibimos tu inscripción</h3>
+    <p class="text-ink-soft max-w-md mx-auto text-sm leading-relaxed">
+      El equipo de admisiones te contactará por WhatsApp o llamada para formalizar tu matrícula. Si quieres agilizarlo, confírmanos por WhatsApp.
+    </p>
+    <div class="pt-4 flex flex-col sm:flex-row justify-center gap-3">
+      <a
+        id="whatsapp-confirm-link"
+        href="https://wa.me/573145577521"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-whatsapp"
+      >
+        Confirmar por WhatsApp
+      </a>
+      <button
+        type="button"
+        id="btn-reset-form"
+        class="btn btn-secondary"
+      >
+        Nueva inscripción
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario Principal -->
+  <form id="inscripcion-form" class="space-y-6" action={formspreeEndpoint} method="POST" novalidate>
+    <!-- Honeypot anti-spam de Formspree: los humanos no lo ven -->
+    <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <div>
+      <h2 class="font-display text-2xl font-semibold text-ink">Formulario de inscripción</h2>
+      <p class="text-sm text-ink-muted mt-1">Tus datos para reservar el cupo. Los campos con <span class="text-rose-600">*</span> son obligatorios.</p>
+    </div>
+
+    <!-- Nombre y Documento -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="nombre" class="field-label">
+          Nombre completo<span class="req">*</span>
+        </label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          required
+          placeholder="Ej. Andrés Camilo Pérez"
+          class="field"
+        />
+        <span class="error-msg field-error hidden">Por favor ingresa tu nombre completo.</span>
+      </div>
+
+      <div>
+        <label for="documento" class="field-label">
+          Tipo y Nº de documento<span class="req">*</span>
+        </label>
+        <div class="flex gap-2">
+          <select
+            id="tipo_doc"
+            name="tipo_doc"
+            class="field field-select-compact"
+          >
+            <option value="CC">C.C.</option>
+            <option value="TI">T.I.</option>
+            <option value="CE">C.E.</option>
+            <option value="PPT">PPT</option>
+          </select>
+          <input
+            type="text"
+            id="documento"
+            name="documento"
+            required
+            placeholder="Nº de documento"
+            class="field flex-1 min-w-0"
+          />
+        </div>
+        <span class="error-msg field-error hidden">Ingresa un número de documento válido.</span>
+      </div>
+    </div>
+
+    <!-- Teléfono y Correo -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="telefono" class="field-label">
+          Teléfono / WhatsApp<span class="req">*</span>
+        </label>
+        <input
+          type="tel"
+          id="telefono"
+          name="telefono"
+          required
+          placeholder="Ej. 314 557 7521"
+          class="field"
+        />
+        <span class="error-msg field-error hidden">Ingresa un teléfono o celular válido.</span>
+      </div>
+
+      <div>
+        <label for="correo" class="field-label">
+          Correo electrónico<span class="req">*</span>
+        </label>
+        <input
+          type="email"
+          id="correo"
+          name="correo"
+          required
+          placeholder="ejemplo@correo.com"
+          class="field"
+        />
+        <span class="error-msg field-error hidden">Ingresa un correo electrónico válido.</span>
+      </div>
+    </div>
+
+    <!-- Fecha nacimiento y Municipio -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="fecha_nacimiento" class="field-label">
+          Fecha de nacimiento
+        </label>
+        <input
+          type="date"
+          id="fecha_nacimiento"
+          name="fecha_nacimiento"
+          class="field"
+        />
+      </div>
+
+      <div>
+        <label for="municipio" class="field-label">
+          Municipio de residencia
+        </label>
+        <input
+          type="text"
+          id="municipio"
+          name="municipio"
+          placeholder="Ej. Sabanalarga, Baranoa, etc."
+          class="field"
+        />
+      </div>
+    </div>
+
+    <!-- Programa de interés y Horario -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Selector Minimalista de Programa -->
+      <div>
+        <label for="programa" class="field-label">
+          Programa de interés<span class="req">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="programa"
+            name="programa"
+            required
+            data-preselected={selectedProgram}
+            class="field"
+          >
+            <option value="">Selecciona un programa...</option>
+            {programOptions.map(cat => (
+              <optgroup label={cat.group}>
+                {cat.items.map(item => (
+                  <option
+                    value={item.value}
+                    selected={selectedProgram === item.value}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+        <span class="error-msg field-error hidden">Selecciona el programa que deseas cursar.</span>
+      </div>
+
+      <!-- Horario de Preferencia (Se deshabilita dinámicamente para Bachillerato) -->
+      <div>
+        <label for="horario" class="field-label">
+          Horario de preferencia
+        </label>
+        <div class="relative">
+          <select
+            id="horario"
+            name="horario"
+            class="field"
+          >
+            <option value="flexible">Cualquiera / Flexible</option>
+            <option value="manana">Jornada Mañana</option>
+            <option value="tarde">Jornada Tarde (Lunes a Viernes)</option>
+            <option value="sabados">Sábados (Intensivo)</option>
+          </select>
+        </div>
+
+        <!-- Mensaje contextual exclusivo de Bachillerato -->
+        <div id="horario-bachillerato-note" class="hidden mt-2 flex items-center gap-1.5 text-xs text-gold-ink font-medium bg-corpro-gold/10 px-2.5 py-2 rounded-lg">
+          <Clock class="w-3.5 h-3.5 shrink-0" />
+          <span>El bachillerato se dicta exclusivamente en <strong>Jornada Mañana</strong>.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- SECCIÓN EXCLUSIVA: Bachillerato con Doble Titulación (Liceo)     -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="liceo-section" class="hidden space-y-5">
+      <!-- Divider con badge -->
+      <div class="flex items-center gap-3 pt-2">
+        <div class="flex items-center gap-2 text-sm font-semibold text-ink">
+          <Users class="w-4 h-4 text-gold-ink" />
+          <span>Datos del estudiante · Liceo Alcira Colón</span>
+        </div>
+        <div class="flex-1 h-px bg-line"></div>
+      </div>
+
+      <!-- Nombre del estudiante y Grado a cursar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="nombre_estudiante" class="field-label">
+            Nombre del estudiante<span class="req">*</span>
+          </label>
+          <input
+            type="text"
+            id="nombre_estudiante"
+            name="nombre_estudiante"
+            placeholder="Nombre completo del estudiante"
+            class="field"
+          />
+          <span class="error-liceo field-error hidden">Ingresa el nombre del estudiante.</span>
+        </div>
+
+        <div>
+          <label for="grado_cursar" class="field-label">
+            Grado a cursar<span class="req">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="grado_cursar"
+              name="grado_cursar"
+              class="field"
+            >
+              <option value="">Selecciona el grado...</option>
+              {gradosLiceo.map(g => (
+                <option value={g}>{g} Grado</option>
+              ))}
+            </select>
+          </div>
+          <span class="error-liceo field-error hidden">Selecciona el grado a cursar.</span>
+        </div>
+      </div>
+
+      <!-- Nombre del acudiente -->
+      <div>
+        <label for="nombre_acudiente" class="field-label">
+          Nombre del acudiente<span class="req">*</span>
+        </label>
+        <input
+          type="text"
+          id="nombre_acudiente"
+          name="nombre_acudiente"
+          placeholder="Nombre completo del acudiente o representante legal"
+          class="field"
+        />
+        <span class="error-liceo field-error hidden">Ingresa el nombre del acudiente.</span>
+      </div>
+
+      <!-- Checkbox: ¿Son dos hermanos? -->
+      <div class="bg-muted/70 p-4 rounded-xl">
+        <div class="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="son_hermanos"
+            name="son_hermanos"
+            class="checkbox"
+          />
+          <label for="son_hermanos" class="text-sm font-medium text-ink cursor-pointer select-none">
+            ¿Se están inscribiendo dos hermanos?
+          </label>
+        </div>
+        <p class="text-xs text-ink-muted mt-1 ml-[1.875rem]">Marca esta opción si vas a matricular a dos hermanos al mismo tiempo.</p>
+      </div>
+
+      <!-- Datos del segundo hermano (oculto hasta marcar checkbox) -->
+      <div id="hermano2-section" class="hidden space-y-4">
+        <!-- Divider con badge secundario -->
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-semibold text-ink">Segundo hermano/a</span>
+          <div class="flex-1 h-px bg-line"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="nombre_estudiante2" class="field-label">
+              Nombre del segundo estudiante<span class="req">*</span>
+            </label>
+            <input
+              type="text"
+              id="nombre_estudiante2"
+              name="nombre_estudiante2"
+              placeholder="Nombre completo del segundo hermano/a"
+              class="field"
+            />
+            <span class="error-hermano2 field-error hidden">Ingresa el nombre del segundo estudiante.</span>
+          </div>
+
+          <div>
+            <label for="grado_cursar2" class="field-label">
+              Grado a cursar<span class="req">*</span>
+            </label>
+            <div class="relative">
+              <select
+                id="grado_cursar2"
+                name="grado_cursar2"
+                class="field"
+              >
+                <option value="">Selecciona el grado...</option>
+                {gradosLiceo.map(g => (
+                  <option value={g}>{g} Grado</option>
+                ))}
+              </select>
+            </div>
+            <span class="error-hermano2 field-error hidden">Selecciona el grado del segundo estudiante.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Comentarios -->
+    <div>
+      <label for="comentarios" class="field-label">
+        Comentarios u observaciones adicionales
+      </label>
+      <textarea
+        id="comentarios"
+        name="comentarios"
+        rows="3"
+        placeholder="Indícanos si tienes alguna duda específica o convalidación de saberes..."
+        class="field"
+      ></textarea>
+    </div>
+
+    <!-- Tratamiento de datos Ley 1581 de 2012 -->
+    <div class="bg-muted/70 p-4 rounded-xl">
+      <div class="flex items-start gap-3">
+        <input
+          type="checkbox"
+          id="habeas_data"
+          name="habeas_data"
+          required
+          class="checkbox mt-0.5"
+        />
+        <label for="habeas_data" class="text-xs text-ink-soft leading-relaxed cursor-pointer">
+          Autorizo de manera libre, previa y voluntaria a <strong>Corprovincia</strong> el tratamiento de mis datos personales de conformidad con la Ley 1581 de 2012 para efectos académicos, de admisión y contacto comercial institucional.<span class="req">*</span>
+        </label>
+      </div>
+      <span id="habeas-error" class="error-msg field-error hidden">Debes aceptar el tratamiento de datos para continuar.</span>
+    </div>
+
+    <!-- Botón de Envío -->
+    <div>
+      <button
+        type="submit"
+        id="submit-btn"
+        class="btn btn-primary btn-lg w-full"
+      >
+        <Send class="w-4 h-4" />
+        <span id="submit-label">Enviar inscripción</span>
+      </button>
+      <p id="submit-error" class="hidden mt-3 flex items-center justify-center gap-1.5 text-sm text-rose-600" role="alert">
+        <AlertCircle class="w-4 h-4 shrink-0" />
+        No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo, o escríbenos por WhatsApp.
+      </p>
+      <p class="text-center text-xs text-ink-muted mt-3">
+        Tu solicitud llega a admisiones: <a href="mailto:contacto@corprovincia.com" class="underline underline-offset-2 hover:text-ink">contacto@corprovincia.com</a>
+      </p>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Manejo de precarga, sincronización de horario y envío de formulario
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const cursoParam = params.get('curso');
+    const select = document.getElementById('programa') as HTMLSelectElement | null;
+    const horarioSelect = document.getElementById('horario') as HTMLSelectElement | null;
+    const horarioNote = document.getElementById('horario-bachillerato-note');
+    const liceoSection = document.getElementById('liceo-section');
+    const sonHermanosCheck = document.getElementById('son_hermanos') as HTMLInputElement | null;
+    const hermano2Section = document.getElementById('hermano2-section');
+
+    // ── Toggle del bloque del segundo hermano ──
+    sonHermanosCheck?.addEventListener('change', () => {
+      if (sonHermanosCheck.checked) {
+        hermano2Section?.classList.remove('hidden');
+        // Animación de entrada suave
+        if (hermano2Section) {
+          hermano2Section.style.opacity = '0';
+          hermano2Section.style.transform = 'translateY(-8px)';
+          requestAnimationFrame(() => {
+            hermano2Section.style.transition = 'opacity 300ms var(--ease-out), transform 300ms var(--ease-out)';
+            hermano2Section.style.opacity = '1';
+            hermano2Section.style.transform = 'translateY(0)';
+          });
+        }
+      } else {
+        if (hermano2Section) {
+          hermano2Section.style.transition = 'opacity 200ms var(--ease-out), transform 200ms var(--ease-out)';
+          hermano2Section.style.opacity = '0';
+          hermano2Section.style.transform = 'translateY(-8px)';
+          setTimeout(() => hermano2Section.classList.add('hidden'), 200);
+        }
+        // Limpiar campos del segundo hermano
+        const n2 = document.getElementById('nombre_estudiante2') as HTMLInputElement | null;
+        const g2 = document.getElementById('grado_cursar2') as HTMLSelectElement | null;
+        if (n2) n2.value = '';
+        if (g2) g2.value = '';
+      }
+    });
+
+    // ── Función para mostrar/ocultar sección Liceo y manejar horario ──
+    function syncHorarioConPrograma(progVal: string) {
+      if (!horarioSelect) return;
+
+      if (progVal === 'liceo') {
+        // Deshabilitar horario y fijar a mañana
+        horarioSelect.value = 'manana';
+        horarioSelect.disabled = true;
+        horarioNote?.classList.remove('hidden');
+        // Mostrar sección del Liceo con animación
+        if (liceoSection) {
+          liceoSection.classList.remove('hidden');
+          liceoSection.style.opacity = '0';
+          liceoSection.style.transform = 'translateY(-10px)';
+          requestAnimationFrame(() => {
+            liceoSection.style.transition = 'opacity 350ms var(--ease-out), transform 350ms var(--ease-out)';
+            liceoSection.style.opacity = '1';
+            liceoSection.style.transform = 'translateY(0)';
+          });
+        }
+      } else {
+        horarioSelect.disabled = false;
+        horarioNote?.classList.add('hidden');
+        if (horarioSelect.value === 'manana') {
+          horarioSelect.value = 'flexible';
+        }
+        // Ocultar sección del Liceo
+        if (liceoSection && !liceoSection.classList.contains('hidden')) {
+          liceoSection.style.transition = 'opacity 250ms var(--ease-out), transform 250ms var(--ease-out)';
+          liceoSection.style.opacity = '0';
+          liceoSection.style.transform = 'translateY(-10px)';
+          setTimeout(() => liceoSection.classList.add('hidden'), 250);
+          // Limpiar campos del Liceo
+          const nE = document.getElementById('nombre_estudiante') as HTMLInputElement | null;
+          const gC = document.getElementById('grado_cursar') as HTMLSelectElement | null;
+          const nA = document.getElementById('nombre_acudiente') as HTMLInputElement | null;
+          if (nE) nE.value = '';
+          if (gC) gC.value = '';
+          if (nA) nA.value = '';
+          if (sonHermanosCheck) sonHermanosCheck.checked = false;
+          hermano2Section?.classList.add('hidden');
+        }
+      }
+    }
+
+    if (select) {
+      // 1. Precarga inicial por query param o data attribute
+      const preselected = select.getAttribute('data-preselected') || cursoParam;
+      if (preselected) {
+        for (let i = 0; i < select.options.length; i++) {
+          if (select.options[i].value === preselected) {
+            select.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      // Aplicar estado inicial de horario
+      syncHorarioConPrograma(select.value);
+
+      // 2. Escuchar cambios de programa
+      select.addEventListener('change', () => {
+        syncHorarioConPrograma(select.value);
+      });
+    }
+
+    const form = document.getElementById('inscripcion-form') as HTMLFormElement | null;
+    const successDiv = document.getElementById('form-success');
+    const resetBtn = document.getElementById('btn-reset-form');
+
+    if (form && successDiv) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validaciones básicas
+        let hasError = false;
+        const nombreInput = form.querySelector('#nombre') as HTMLInputElement;
+        const docInput = form.querySelector('#documento') as HTMLInputElement;
+        const telInput = form.querySelector('#telefono') as HTMLInputElement;
+        const correoInput = form.querySelector('#correo') as HTMLInputElement;
+        const progSelect = form.querySelector('#programa') as HTMLSelectElement;
+        const habeas = form.querySelector('#habeas_data') as HTMLInputElement;
+
+        if (!nombreInput.value.trim()) {
+          nombreInput.nextElementSibling?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          nombreInput.nextElementSibling?.classList.add('hidden');
+        }
+
+        if (!docInput.value.trim()) {
+          docInput.parentElement?.nextElementSibling?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          docInput.parentElement?.nextElementSibling?.classList.add('hidden');
+        }
+
+        if (!telInput.value.trim() || telInput.value.length < 7) {
+          telInput.nextElementSibling?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          telInput.nextElementSibling?.classList.add('hidden');
+        }
+
+        if (!correoInput.value.trim() || !correoInput.value.includes('@')) {
+          correoInput.nextElementSibling?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          correoInput.nextElementSibling?.classList.add('hidden');
+        }
+
+        if (!progSelect.value) {
+          progSelect.parentElement?.nextElementSibling?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          progSelect.parentElement?.nextElementSibling?.classList.add('hidden');
+        }
+
+        // Validaciones exclusivas del Liceo
+        if (progSelect.value === 'liceo') {
+          const nEst = document.getElementById('nombre_estudiante') as HTMLInputElement | null;
+          const gCurs = document.getElementById('grado_cursar') as HTMLSelectElement | null;
+          const nAcud = document.getElementById('nombre_acudiente') as HTMLInputElement | null;
+          
+          const liceoErrors = form.querySelectorAll('.error-liceo');
+          liceoErrors.forEach(el => el.classList.add('hidden'));
+
+          if (nEst && !nEst.value.trim()) {
+            nEst.nextElementSibling?.classList.remove('hidden');
+            hasError = true;
+          }
+          if (gCurs && !gCurs.value) {
+            gCurs.parentElement?.nextElementSibling?.classList.remove('hidden');
+            hasError = true;
+          }
+          if (nAcud && !nAcud.value.trim()) {
+            nAcud.nextElementSibling?.classList.remove('hidden');
+            hasError = true;
+          }
+
+          // Validar segundo hermano si el checkbox está marcado
+          if (sonHermanosCheck?.checked) {
+            const nEst2 = document.getElementById('nombre_estudiante2') as HTMLInputElement | null;
+            const gCurs2 = document.getElementById('grado_cursar2') as HTMLSelectElement | null;
+            const hermano2Errors = form.querySelectorAll('.error-hermano2');
+            hermano2Errors.forEach(el => el.classList.add('hidden'));
+
+            if (nEst2 && !nEst2.value.trim()) {
+              nEst2.nextElementSibling?.classList.remove('hidden');
+              hasError = true;
+            }
+            if (gCurs2 && !gCurs2.value) {
+              gCurs2.parentElement?.nextElementSibling?.classList.remove('hidden');
+              hasError = true;
+            }
+          }
+        }
+
+        const habeasError = document.getElementById('habeas-error');
+        if (!habeas.checked) {
+          habeasError?.classList.remove('hidden');
+          hasError = true;
+        } else {
+          habeasError?.classList.add('hidden');
+        }
+
+        if (hasError) {
+          const firstErr = form.querySelector('.field-error:not(.hidden)');
+          (firstErr?.parentElement?.querySelector('input, select, textarea') as HTMLElement | null)?.focus();
+          return;
+        }
+
+        // Determinar horario seleccionado (aunque esté disabled)
+        const horarioTexto = progSelect.value === 'liceo' 
+          ? 'Jornada Mañana' 
+          : (horarioSelect?.options[horarioSelect.selectedIndex]?.text || 'Flexible');
+
+        // Construir mensaje WhatsApp
+        const progText = progSelect.options[progSelect.selectedIndex]?.text || progSelect.value;
+        let waMsg = `Hola Corprovincia, acabo de enviar mi formulario de inscripción para ${progText} (Horario: ${horarioTexto}). Mi nombre es ${nombreInput.value} y mi número de contacto es ${telInput.value}.`;
+
+        // Añadir datos del Liceo si aplica
+        if (progSelect.value === 'liceo') {
+          const nEst = (document.getElementById('nombre_estudiante') as HTMLInputElement)?.value || '';
+          const gCurs = (document.getElementById('grado_cursar') as HTMLSelectElement)?.value || '';
+          const nAcud = (document.getElementById('nombre_acudiente') as HTMLInputElement)?.value || '';
+          waMsg += ` | Estudiante: ${nEst}, Grado: ${gCurs}, Acudiente: ${nAcud}.`;
+          if (sonHermanosCheck?.checked) {
+            const nEst2 = (document.getElementById('nombre_estudiante2') as HTMLInputElement)?.value || '';
+            const gCurs2 = (document.getElementById('grado_cursar2') as HTMLSelectElement)?.value || '';
+            waMsg += ` | Segundo hermano/a: ${nEst2}, Grado: ${gCurs2}.`;
+          }
+        }
+
+        const waLink = document.getElementById('whatsapp-confirm-link') as HTMLAnchorElement | null;
+        if (waLink) {
+          waLink.href = `https://wa.me/573145577521?text=${encodeURIComponent(waMsg)}`;
+        }
+
+        // Enviar a Formspree
+        const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+        const submitLabel = document.getElementById('submit-label');
+        const submitError = document.getElementById('submit-error');
+        submitError?.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = true;
+        if (submitLabel) submitLabel.textContent = 'Enviando…';
+
+        const data = new FormData(form);
+        // El select de horario puede estar disabled (Liceo) y FormData lo omite
+        data.set('horario', horarioTexto);
+        data.set('programa', progText);
+        data.set('_subject', `Nueva inscripción: ${progText} — ${nombreInput.value.trim()}`);
+
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error(`Formspree respondió ${res.status}`);
+        } catch (err) {
+          console.error(err);
+          submitError?.classList.remove('hidden');
+          return;
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+          if (submitLabel) submitLabel.textContent = 'Enviar inscripción';
+        }
+
+        // Mostrar feedback de éxito
+        form.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          form.reset();
+          form.classList.remove('hidden');
+          successDiv.classList.add('hidden');
+          // Ocultar sección del Liceo al resetear
+          liceoSection?.classList.add('hidden');
+          hermano2Section?.classList.add('hidden');
+          if (select) {
+            syncHorarioConPrograma(select.value);
+          }
+        });
+      }
+    }
+  });
+</script>
